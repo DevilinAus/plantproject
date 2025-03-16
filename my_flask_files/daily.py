@@ -4,9 +4,9 @@ import sqlite3
 import random
 import time
 
-rolling_days_bp = Blueprint('rolling_days', __name__, template_folder='templates')
+daily_bp = Blueprint('daily', __name__, template_folder='templates')
 
-@rolling_days_bp.route('/')
+@daily_bp.route('/daily')
 def index():
     check_moisture()
 
@@ -15,7 +15,7 @@ def index():
     cursor = connection.cursor()
 
     #Fetch the last 30 entries of moisture data from the database and assign them to a variable
-    cursor.execute("SELECT * FROM moist ORDER BY date_time DESC LIMIT 28")
+    cursor.execute("SELECT * FROM minute_reading ORDER BY date_time DESC LIMIT 1440")
     rows = cursor.fetchall()  
 
     # Close the connection

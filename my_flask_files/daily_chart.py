@@ -1,26 +1,43 @@
 from flask import Flask, render_template
 from flask import Blueprint
+from datetime import datetime
 import sqlite3
 import random
 import time
 
-rolling_days_bp = Blueprint('rolling_days', __name__, template_folder='templates')
-daily_bp = Blueprint('daily', __name__, template_folder='templates')
+daily_chart_bp = Blueprint('daily_chart', __name__, template_folder='templates')
 
-@daily_bp.route('/daily')
-def index():
-    check_moisture()
+@daily_chart_bp.route('/daily_chart')
+def daily_chart():
 
     #Reconnect to the DB
     connection = sqlite3.connect("plant_info.db")
     cursor = connection.cursor()
 
+    #TODO - WRITE ACTUAL FUNCTION TO PREPARE DATA FOR CHARTING HERE
     #Fetch the last 30 entries of moisture data from the database and assign them to a variable
     cursor.execute("SELECT * FROM minute_reading ORDER BY date_time DESC LIMIT 1440")
-    rows = cursor.fetchall()  
+    db_data = cursor.fetchall()  
+
+    labels = []
+    values = []
+
+    # TODO - This is a pretty yuck way of handling the hourly view, ideally I implement an average of values, but I need to 
+    # understand how to extract the hour from the timestamp, and catch any downtime on the ardiuno when times are not logged. 
+    # This also needs to consider right now we're just grabbing the last 1440 values, and if there was downtime, they might be 
+    # from another day if there is missing data. Currently just grabbing 1 value and assuming no downtime.
+    for row in db_data:
+        if row % 60 == True:
+            values.append(row[1])
+
+    for row in db_data:
+        labels.append(row[0])
+        values.append(row[1])
 
     # Close the connection
     connection.close()
+
+    return render_template("graph.html", labels=labels, values=values)
 
     #fake = [{"percent" : 23, "box_colour" : "green"}]
 
@@ -78,33 +95,7 @@ def box_colour_assign(last_generated):
         return box_colours_dict["wet-100"]
 
 # Function to get the latest data from the database
-def check_moisture():
 
-    # Connect to the database
-    connection = sqlite3.connect("plant_info.db")
-    cursor = connection.cursor()
-
-    #Gets the time since epoch
-    epoch_time = int(time.time())
-    
-    #Modulus the time by the seconds in 1 hour to check if the time is exactly an hour
-    mod_epoch = (epoch_time%3600)
-    print(f"MOD Epoch = {mod_epoch}") #DEBUG PRINT that value
-
-    #if mod_epoch == 0: DELETE THE COMMENT WHEN YOU NEED HOURLY RUNS
-    #current_moist = moistCheck()
-    
-    #Define the starting number for the randomly generated readings.
-    last_generated = 50
-    
-    for i in range (28):
-        last_generated = moistCheck(last_generated)
-        box_colour = box_colour_assign(last_generated)
-
-        cursor.execute("INSERT INTO moist (date_time, wetness, box_colour) VALUES (?, ?, ?)", (epoch_time, last_generated, box_colour))
-
-    connection.commit()
-    connection.close()
 
 
 def to_model(row):
@@ -116,6 +107,4 @@ def to_model(row):
     }
 
     return model
-
-
 
