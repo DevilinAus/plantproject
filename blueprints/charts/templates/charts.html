@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <canvas id="lineChart" width="1800" height="1200"></canvas>
+{% extends "base.html" %}
+
+{% block content %}
+    {# <div class="w-[1000px] h-[800px]"> #}
+    <canvas id="lineChart" class="w-[1000px] h-[800px] self-center"></canvas>
+    {# </div> #}
+{% endblock %}
+
+{% block scripts %}
     <script>
         var ctx = document.getElementById("lineChart").getContext("2d");
         var lineChart = new Chart(ctx, {
@@ -17,7 +15,7 @@
                 labels: {{labels | safe }},
                 datasets: [
                     {
-                        label: "Data points",
+                        label: "Moisture Reading",
                         data: {{ values | safe }},
                         fill: false, 
                         borderColor: "rgb(75, 192, 192)",
@@ -31,6 +29,4 @@
 
         })
     </script>
-
-</body>
-</html>
+{% endblock %}

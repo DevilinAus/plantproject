@@ -4,13 +4,13 @@
 
 {% endblock %}
 
-{% block body %}
+{% block content %}
 
 
 
 
 <div class="flex gap-4 justify-center">
-      <div class="w-1/4 bg-[#90b648] text-primary-content rounded-lg p-3" >
+      <div class="w-1/4 bg-primary text-primary-content rounded-lg p-3" >
       <h1 class="text-xl font-bold">Welcome to Tomato Tracker</h1>
       
 
@@ -25,7 +25,7 @@
       <li>Visual data trends: Monitor long-term trends to make informed watering decisions.</li>
       </ul>
 
-      {# {{current_moisture | safe}} #}
+      
 
       </div>
 
@@ -35,8 +35,16 @@
       
 
       </div>
-
+      <br>
+      
 </div>
+
+<div class="w-1/2 bg-secondary self-center mt-4 text-center text-secondary-content rounded-lg p-3">
+<h1 class="text-xl font-bold">Latest Stats!</h1>
+<br>
+{{current_moisture | safe}}</div>
+
+
 
 
 {% endblock %}

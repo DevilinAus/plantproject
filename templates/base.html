@@ -5,6 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -12,24 +13,44 @@
     <title>🍅 Tomato App</title>
     {% block head %}{% endblock %}
 </head>
+
 <body class="flex flex-col min-h-screen">
+
 <div class="navbar bg-base-100 shadow-sm mb-10">
+
   <div class="flex-none">
-    <button class="btn btn-square btn-ghost">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg>
-    </button>
+
+  {# Dropdown Code #}
+    <details class="dropdown">
+  <summary class="btn btn-square btn-ghost"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg></summary>
+  <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+    <li><a href="/">Home</a></li>
+    <li><a href="/charts">Charts</a></li>
+    <li><a>Item 2</a></li>
+  </ul>
+</details>
+
+   
+
   </div>
+
   <div class="flex-1">
     <a href="/" class="btn btn-ghost text-xl">🍅 Tomato App</a>
   </div>
+
   <div class="flex-none">
     <a href="/login" class="text-neutral-content btn btn-ghost text-l bg-neutral">Login</a>
   </div>
-</div>
-    {% block body %}{% endblock %}
 
-<footer class="w-full bg-neutral text-neutral-content py-6 mt-16 fixed bottom-0 ">
+</div>
+    {% block content %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
+
+<footer class="w-full bg-neutral text-neutral-content py-6 mt-16 fixed bottom-0">
+
   <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
+
     <p class="text-sm">&copy; 2025 Tomato Tracker. All rights reserved.</p>
     
     <div class="flex space-x-4 mt-4 md:mt-0">
@@ -37,8 +58,11 @@
       <a href="#" class="text-sm hover:underline">GitHub</a>
       <a href="#" class="text-sm hover:underline">Contact</a>
     </div>
+
   </div>
 </footer>
+
+
 </body>
 
 </html>

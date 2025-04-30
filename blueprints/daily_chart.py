@@ -27,12 +27,16 @@ def daily_chart():
     # This also needs to consider right now we're just grabbing the last 1440 values, and if there was downtime, they might be 
     # from another day if there is missing data. Currently just grabbing 1 value and assuming no downtime.
     for row in db_data:
-        if row % 60 == True:
+        # print(int(row[0])-1742026260)
+        
+        if int(row[0]) % 2 == 0:
+            # print("got one")
+            labels.append(row[0])
             values.append(row[1])
 
-    for row in db_data:
-        labels.append(row[0])
-        values.append(row[1])
+    # for row in db_data:
+    #     labels.append(row[0])
+    #     #
 
     # Close the connection
     connection.close()

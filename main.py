@@ -1,13 +1,16 @@
 from flask import Blueprint,Flask, render_template
-from my_flask_files import homepage, rolling_days, daily, daily_chart
+from blueprints import homepage, rolling_days, daily, daily_chart
 import sqlite3
+
+from blueprints.charts import charts
 
 app = Flask(__name__)
 
-app.register_blueprint(homepage.homepage_bp)
-app.register_blueprint(rolling_days.rolling_days_bp)
-app.register_blueprint(daily.daily_bp)
-app.register_blueprint(daily_chart.daily_chart_bp)
+# app.register_blueprint(homepage.homepage_bp)
+# app.register_blueprint(rolling_days.rolling_days_bp)
+# app.register_blueprint(daily.daily_bp)
+app.register_blueprint(charts.charts_bp)
+# app.register_blueprint(daily_chart.daily_chart_bp)
 #app.register_blueprint(calendar_bp, url_prefix='/calendar')
 
 #Set this to 1 if you need to recreate the table.
