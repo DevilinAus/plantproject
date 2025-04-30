@@ -30,7 +30,7 @@ def index():
 
     # This is the old render template that worked before I added it to extend base.html
     # # return render_template('graph.html', monthly_moisture=list(map(to_model,rows)))
-    return render_template('graph.html', labels=[10, 20, 30, 40], values=[30, 45, 50, 60])
+    return render_template('charts.html', labels=[10, 20, 30, 40], values=[30, 45, 50, 60])
     
 
 box_colours_dict = {
