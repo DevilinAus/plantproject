@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="w-1/2 text-base-content mx-auto font-light p-3">
+<h1 class="text-xl font-bold" >Welcome to Tomato Tracker!</h1>
+<br>
+<p>Tomato Tracker is a web-based application designed to help you monitor and optimize the health of your tomato plants. By measuring soil moisture levels in real-time, it provides you with actionable insights to ensure your plants are properly hydrated at all times.</p>
+<br>
+<p>Whether you're a seasoned gardener, a hobbyist with an interest in technology, or someone who simply wants to improve their plant care routine, Tomato Tracker is the ideal solution for keeping your tomato plants healthy and thriving.</p>
+<br>
+<h1 class="font-bold">Key Features:</h1>
+<ul class="list-disc ml-6">
+    <li>Real-time Monitoring: Access live data on your tomato plants' moisture levels from anywhere.</li>
+
+    <li>Automated Alerts: Set customizable thresholds to receive notifications when moisture levels fall outside your desired range.</li>
+
+    <li>Historical Data: View trends over time to track moisture levels and make informed decisions about watering.</li>
+
+    <li>User-Friendly Interface: An intuitive design that makes it easy to track and understand your plant's needs, regardless of your experience level.</li>
+</ul>
+<br>
+With Tomato Tracker, you no longer need to worry about under or overwatering your plants. The app helps you make data-driven decisions, allowing you to focus on growing healthier, more productive tomatoes.
+</div>
+
+<div class="flex gap-4 justify-center">
+      <div class="w-1/4 bg-neutral rounded-lg p-3" >
+      Current Summary: 
+      Latest Reading:
+      Wetness Estimation:
+      {{current_moisture | safe}}
+
+      </div>
+
+      <div class="w-1/4 bg-neutral rounded-lg p-3" >
+
+      
+
+      </div>
+
+</div>
+
+
+{% endblock %}
+

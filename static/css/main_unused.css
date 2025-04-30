@@ -34,7 +34,7 @@ body {
     box-sizing: border-box;                /* Make sure padding is included in the width calculation */
 }
 
-/* Style the individual boxes inside the grid */
+Style the individual boxes inside the grid
 .box {
     background-color: #f0f0f0;            /* Light gray background */
     border: 1px solid #ccc;               /* Border around each box */
