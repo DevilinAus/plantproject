@@ -1,51 +1,27 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block head %}
-
-{% endblock %}
-
+{% endblock head %}
 {% block content %}
-
-
-
-
-<div class="flex gap-4 justify-center">
-      <div class="w-1/4 bg-primary text-primary-content rounded-lg p-3" >
-      <h1 class="text-xl font-bold">Welcome to Tomato Tracker</h1>
-      
-
-      <p class="italic">Your ultimate solution for monitoring and optimizing tomato plant health in real time.</p>
-      <br>
-      <h1 class="text-xl font-bold">Key Features:</h1>
-      <ul class="list-disc ml-6">
-      <li>Real-time moisture monitoring: Track hydration levels anytime, anywhere.</li>
-
-      <li>Smart notifications: Receive alerts when moisture levels are out of range.</li>
-
-      <li>Visual data trends: Monitor long-term trends to make informed watering decisions.</li>
-      </ul>
-
-      
-
+      <div class="flex gap-4 justify-center">
+            <div class="w-1/4 bg-primary text-primary-content rounded-lg p-3">
+                  <h1 class="text-xl font-bold">Welcome to Tomato Tracker</h1>
+                  <p class="italic">Your ultimate solution for monitoring and optimizing tomato plant health in real time.</p>
+                  <br>
+                  <h1 class="text-xl font-bold">Key Features:</h1>
+                  <ul class="list-disc ml-6">
+                        <li>Real-time moisture monitoring: Track hydration levels anytime, anywhere.</li>
+                        <li>Smart notifications: Receive alerts when moisture levels are out of range.</li>
+                        <li>Visual data trends: Monitor long-term trends to make informed watering decisions.</li>
+                  </ul>
+            </div>
+            <div class="bg-[url('/static/images/logotrimmed.png')] h-[620px] bg-cover bg-center w-1/4 relative bg-neutral rounded-lg">
+                  {# <img src="/static/images/logo.png" alt="Logo" class="block mx-auto"> #}
+            </div>
+            <br>
       </div>
-
-      <div class="bg-[url('/static/images/logotrimmed.png')] h-[620px] bg-cover bg-center w-1/4 relative bg-neutral rounded-lg" >
-      {# <img src="/static/images/logo.png" alt="Logo" class="block mx-auto"> #}
-
-      
-
+      <div class="w-1/2 bg-secondary self-center mt-4 text-center text-secondary-content rounded-lg p-3">
+            <h1 class="text-xl font-bold">Latest Stats!</h1>
+            <br>
+            {{ current_moisture | safe }}
       </div>
-      <br>
-      
-</div>
-
-<div class="w-1/2 bg-secondary self-center mt-4 text-center text-secondary-content rounded-lg p-3">
-<h1 class="text-xl font-bold">Latest Stats!</h1>
-<br>
-{{current_moisture | safe}}</div>
-
-
-
-
-{% endblock %}
-
+{% endblock content %}

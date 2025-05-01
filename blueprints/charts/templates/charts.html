@@ -1,11 +1,15 @@
 {% extends "base.html" %}
-
 {% block content %}
-    {# <div class="w-[1000px] h-[800px]"> #}
-    <canvas id="lineChart" class="w-[1000px] h-[800px] self-center"></canvas>
-    {# </div> #}
-{% endblock %}
-
+    <div class="self-center items-center justify-center">
+        <button id="btn-1day" class="btn btn-outline">1 Day</button>
+        <button class="btn btn-outline btn-primary">1 Week</button>
+        <button class="btn btn-outline btn-secondary">1 Month</button>
+        <button class="btn btn-outline btn-accent">Custom Range</button>
+        <div class="bg-neutral p-8 mt-6 rounded-lg">
+            <canvas id="lineChart" class="w-[1000px] h-[800px] pt-6"></canvas>
+        </div>
+    </div>
+{% endblock content %}
 {% block scripts %}
     <script>
         var ctx = document.getElementById("lineChart").getContext("2d");
@@ -18,7 +22,11 @@
                         label: "Moisture Reading",
                         data: {{ values | safe }},
                         fill: false, 
-                        borderColor: "rgb(75, 192, 192)",
+                        borderColor: "rgb(75, 192, 192)",  
+                        {# TO DO WHEN NOT USING CDN MAKE A CUSTOM COLOUR HERE LOOK INTO: 
+                        tailwind.config.js
+                        #}
+
                         lineTension: 0.1
                     }
                 ]
@@ -28,5 +36,19 @@
             }
 
         })
-    </script>
-{% endblock %}
+
+        //Listen for button click || async allows me to use await in the function, so the code 
+        // keeps running whilst it waits for a reply. (website doesn't freeze etc)
+        document.getElementById("btn-1day").addEventListener("click", async function() {
+            // Send a POST request to the backend, this is an anonymous function (it's not the same as python)
+            // declare a variable called response.
+            const response = await fetch('/api/get_chart_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ timeframe: '1d' })
+            });
+        })
+</script>
+{% endblock scripts %}
