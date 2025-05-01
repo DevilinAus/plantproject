@@ -39,12 +39,20 @@ def translate_moisture(reading):
     # 500 seems to maximum reading in air, unsure about soil
 
     if reading == 0:
+        translated_moisture_string = f"Can't get any wetter! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+    elif reading <= 100:
         translated_moisture_string = (
             f"Soaked! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
         )
-    else:
+    elif reading <= 200:
         translated_moisture_string = (
-            f"Dry! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+            f"Nice and moist! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
         )
+    elif reading <= 300:
+        translated_moisture_string = f"Average, if no rain due consider watering! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+    elif reading <= 400:
+        translated_moisture_string = f"It's time to water! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+    elif reading <= 400:
+        translated_moisture_string = f"Sahara Desert, they're probably dead. Water immediately! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
 
     return translated_moisture_string

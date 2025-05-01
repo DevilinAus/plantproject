@@ -6,14 +6,14 @@
         <button class="btn btn-outline btn-secondary">1 Month</button>
         <button class="btn btn-outline btn-accent">Custom Range</button>
         <div class="bg-neutral p-8 mt-6 rounded-lg">
-            <canvas id="lineChart" class="w-[1000px] h-[800px] pt-6"></canvas>
+            <canvas id="chart" class="w-[1000px] h-[800px] pt-6"></canvas>
         </div>
     </div>
 {% endblock content %}
 {% block scripts %}
     <script>
-        var ctx = document.getElementById("lineChart").getContext("2d");
-        var lineChart = new Chart(ctx, {
+        var ctx = document.getElementById("chart").getContext("2d");
+        var chart = new Chart(ctx, {
             type: "line",
             data: {
                 labels: {{labels | safe }},
@@ -27,7 +27,7 @@
                         tailwind.config.js
                         #}
 
-                        lineTension: 0.1
+                        tension: 0.1
                     }
                 ]
             },
@@ -49,6 +49,22 @@
                 },
                 body: JSON.stringify({ timeframe: '1d' })
             });
+
+            // Error handling - check if the respone is good, if not exit function and write to console
+            if (!response.ok) {
+                console.error("Failed to fetch chart data.");
+                return;
+            }
+
+            // Set the response to ChartData when it arrives
+            const chartData = await response.json(); 
+
+            // update the chart with the fresh data
+            chart.data.labels = chartData.labels;
+            chart.data.datasets[0].data = chartData.values;
+            chart.update();
+ 
+            
         })
 </script>
 {% endblock scripts %}
