@@ -1,6 +1,10 @@
 import sqlite3
 
-max_data_points = {"1d": 1440, "1w": 10080, "1m": 44640}
+max_data_points = {
+    "1d": 1440, 
+    "1w": 10080, 
+    "1m": 44640
+    }
 
 
 def prepare_data(timeframe):

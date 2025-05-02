@@ -2,69 +2,14 @@
 {% block content %}
     <div class="self-center items-center justify-center">
         <button id="btn-1day" class="btn btn-outline">1 Day</button>
-        <button class="btn btn-outline btn-primary">1 Week</button>
-        <button class="btn btn-outline btn-secondary">1 Month</button>
-        <button class="btn btn-outline btn-accent">Custom Range</button>
+        <button id="btn-1week" class="btn btn-outline btn-primary">1 Week</button>
+        <button id="btn-1month" class="btn btn-outline btn-secondary">1 Month</button>
+        <button id="btn-custom" class="btn btn-outline btn-accent">Custom Range</button>
         <div class="bg-neutral p-8 mt-6 rounded-lg">
             <canvas id="chart" class="w-[1000px] h-[800px] pt-6"></canvas>
         </div>
     </div>
 {% endblock content %}
 {% block scripts %}
-    <script>
-        var ctx = document.getElementById("chart").getContext("2d");
-        var chart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: {{labels | safe }},
-                datasets: [
-                    {
-                        label: "Moisture Reading",
-                        data: {{ values | safe }},
-                        fill: false, 
-                        borderColor: "rgb(75, 192, 192)",  
-                        {# TO DO WHEN NOT USING CDN MAKE A CUSTOM COLOUR HERE LOOK INTO: 
-                        tailwind.config.js
-                        #}
-
-                        tension: 0.1
-                    }
-                ]
-            },
-            options: {
-                responsive: false
-            }
-
-        })
-
-        //Listen for button click || async allows me to use await in the function, so the code 
-        // keeps running whilst it waits for a reply. (website doesn't freeze etc)
-        document.getElementById("btn-1day").addEventListener("click", async function() {
-            // Send a POST request to the backend, this is an anonymous function (it's not the same as python)
-            // declare a variable called response.
-            const response = await fetch('/api/get_chart_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ timeframe: '1d' })
-            });
-
-            // Error handling - check if the respone is good, if not exit function and write to console
-            if (!response.ok) {
-                console.error("Failed to fetch chart data.");
-                return;
-            }
-
-            // Set the response to ChartData when it arrives
-            const chartData = await response.json(); 
-
-            // update the chart with the fresh data
-            chart.data.labels = chartData.labels;
-            chart.data.datasets[0].data = chartData.values;
-            chart.update();
- 
-            
-        })
-</script>
+    <script src="/static/js/charts.js" defer></script>
 {% endblock scripts %}
