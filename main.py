@@ -1,9 +1,10 @@
 from flask import Flask
 
-
 from blueprints import homepage
 from blueprints.charts import api, charts
 from blueprints.auth.login import login
+
+import secrets
 
 app = Flask(__name__)
 
