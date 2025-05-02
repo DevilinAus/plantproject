@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, flash
+from flask_login import UserMixin
 import sqlite3
 
 

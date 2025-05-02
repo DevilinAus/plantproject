@@ -7,6 +7,8 @@ from blueprints.auth.login import login
 import secrets
 
 app = Flask(__name__)
+app.secret_key = secrets.token_hex(32) 
+#TODO - figure out how to make this not refresh on every launch
 
 
 app.register_blueprint(homepage.homepage_bp)
