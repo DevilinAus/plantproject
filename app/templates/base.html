@@ -47,13 +47,35 @@
         </details>
       </div>
       <div class="flex-1">
-        <a href="{{ url_for('index.show_homepage') }}" class="btn btn-ghost text-xl">🍅 Tomato App</a>
+        <a href="{{ url_for('index.show_homepage') }}"
+           class="btn btn-ghost text-xl">🍅 Tomato App</a>
       </div>
       <div class="flex-none">
         <a href="{{ url_for('login.login') }}"
            class="text-neutral-content btn btn-ghost text-l bg-neutral">Login</a>
       </div>
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="w-1/2 bg-red-500 text-white mx-auto p-4 rounded-lg mb-4">
+              {{ message }}
+              <button type="button"
+                      class="ml-4 text-white"
+                      onclick="this.parentElement.style.display='none'">&times;</button>
+            </div>
+          {% else %}
+            <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
+              {{ message }}
+              <button type="button"
+                      class="ml-4 text-white"
+                      onclick="this.parentElement.style.display='none'">&times;</button>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
     {% block content %}
     {% endblock content %}
     <footer class="w-full bg-neutral text-neutral-content py-6 mt-16 fixed bottom-0">

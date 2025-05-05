@@ -2,34 +2,13 @@
 {% block head %}
 {% endblock head %}
 {% block content %}
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                {% if category == 'error' %}
-                    <div class="w-1/2 bg-red-500 text-white mx-auto p-4 rounded-lg mb-4">
-                        {{ message }}
-                        <button type="button"
-                                class="ml-4 text-white"
-                                onclick="this.parentElement.style.display='none'">&times;</button>
-                    </div>
-                {% else %}
-                    <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
-                        {{ message }}
-                        <button type="button"
-                                class="ml-4 text-white"
-                                onclick="this.parentElement.style.display='none'">&times;</button>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     <div class="w-1/2 bg-neutral mx-auto p-8 mt-6 rounded-lg">
         <h1 class="text-xl font-bold">Login</h1>
         <br>
         <form method="POST" action="{{ url_for('login.login') }}">
-            <label for="username">Username</label>
+            <label for="email">Email</label>
             <br>
-            <input type="text" name="username" id="username" required>
+            <input type="text" name="email" id="email" required>
             <br>
             <br>
             <label for="password">Password</label>
