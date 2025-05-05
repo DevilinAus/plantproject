@@ -1,12 +1,10 @@
 from flask import render_template
-from flask import Blueprint
+from . import index_bp  # if your route handlers are in index.py
+
 import sqlite3
 
-homepage_bp = Blueprint("homepage", __name__, template_folder="templates")
-
-
-@homepage_bp.route("/")
-def index():
+@index_bp.route("/")
+def show_homepage():
 
     # Reconnect to the DB
     connection = sqlite3.connect("plant_info.db")

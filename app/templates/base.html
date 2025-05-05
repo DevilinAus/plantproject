@@ -35,10 +35,10 @@
           </summary>
           <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
             <li>
-              <a href="{{ url_for('homepage.index') }}">Home</a>
+              <a href="{{ url_for('index.show_homepage') }}">Home</a>
             </li>
             <li>
-              <a href="{{ url_for('charts.charts') }}">Charts</a>
+              <a href="{{ url_for('charts.show_charts') }}">Charts</a>
             </li>
             <li>
               <a>Item 2</a>
@@ -47,7 +47,7 @@
         </details>
       </div>
       <div class="flex-1">
-        <a href="{{ url_for('homepage.index') }}" class="btn btn-ghost text-xl">🍅 Tomato App</a>
+        <a href="{{ url_for('index.show_homepage') }}" class="btn btn-ghost text-xl">🍅 Tomato App</a>
       </div>
       <div class="flex-none">
         <a href="{{ url_for('login.login') }}"
