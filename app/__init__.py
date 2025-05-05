@@ -18,13 +18,13 @@ def create_app():
     
     from app.index import index_bp
     from app.charts import charts_bp
-    # from app.charts import charts_bp
+
     from app.login import login_bp
 
    
     app.register_blueprint(index_bp)
     app.register_blueprint(charts_bp)
-    # app.register_blueprint(charts_bp)
+
     app.register_blueprint(login_bp)
 
     return app

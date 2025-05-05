@@ -2,7 +2,6 @@ from flask import render_template, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 import sqlite3
 import flask_login
-from run import app
 import flask
 from . import login_bp
 
@@ -64,7 +63,3 @@ def login():
 
     return render_template("login.html")
 
-@app.route('/protected')
-@flask_login.login_required
-def protected():
-    return 'Logged in as: ' + flask_login.current_user.id
