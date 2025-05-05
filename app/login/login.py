@@ -17,6 +17,8 @@ from . import login_bp
 
 @login_bp.route("/login", methods=['GET', 'POST'])
 def login():
+
+
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -34,4 +36,15 @@ def login():
         
        
     return render_template("login.html")
+
+@login_bp.route("/logout")
+def logout():
+
+    # logout user
+    flask_login.logout_user()
+
+    flash('Successfully logged out', 'success')
+
+    # redirct to homepage
+    return flask.redirect(flask.url_for('index.show_homepage'))
 

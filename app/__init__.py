@@ -47,6 +47,7 @@ def create_app():
     from app.charts import charts_bp
     from app.login import login_bp
 
+
    
     app.register_blueprint(index_bp)
     app.register_blueprint(charts_bp)

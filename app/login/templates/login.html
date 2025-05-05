@@ -2,21 +2,25 @@
 {% block head %}
 {% endblock head %}
 {% block content %}
-    <div class="w-1/2 bg-neutral mx-auto p-8 mt-6 rounded-lg">
-        <h1 class="text-xl font-bold">Login</h1>
-        <br>
-        <form method="POST" action="{{ url_for('login.login') }}">
-            <label for="email">Email</label>
+    {% if current_user.is_authenticated %}
+        <div>already logged in as {{ current_user.id }}</div>
+    {% else %}
+        <div class="w-1/2 bg-neutral mx-auto p-8 mt-6 rounded-lg">
+            <h1 class="text-xl font-bold">Login</h1>
             <br>
-            <input type="text" name="email" id="email" required>
-            <br>
-            <br>
-            <label for="password">Password</label>
-            <br>
-            <input type="password" name="password" id="password" required>
-            <br>
-            <br>
-            <button class="btn btn-sm" type="submit">Log In</button>
-        </form>
-    </div>
+            <form method="POST" action="{{ url_for('login.login') }}">
+                <label for="email">Email</label>
+                <br>
+                <input type="text" name="email" id="email" required>
+                <br>
+                <br>
+                <label for="password">Password</label>
+                <br>
+                <input type="password" name="password" id="password" required>
+                <br>
+                <br>
+                <button class="btn btn-sm" type="submit">Log In</button>
+            </form>
+        </div>
+    {% endif %}
 {% endblock content %}
