@@ -8,7 +8,7 @@
         <div class="w-1/2 bg-neutral mx-auto p-8 mt-6 rounded-lg">
             <h1 class="text-xl font-bold">Login</h1>
             <br>
-            <form method="POST" action="{{ url_for('login.login') }}">
+            <form method="POST" action="{{ url_for('auth.login') }}">
                 <label for="email">Email</label>
                 <br>
                 <input type="text" name="email" id="email" required>
