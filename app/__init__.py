@@ -48,10 +48,12 @@ def create_app():
     from app.charts import charts_bp
     from app.auth import auth_bp
     from app.admin import admin_bp
+    from app.charts.api import api_bp
 
     app.register_blueprint(index_bp)
     app.register_blueprint(charts_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(api_bp)
 
     return app

@@ -4,12 +4,12 @@ import sqlite3
 import random
 import time
 
+
 from . import charts_bp
 
 
 @charts_bp.route("/charts")
 def show_charts():
-
     # Reconnect to the DB
     connection = sqlite3.connect("plant_info.db")
     cursor = connection.cursor()
@@ -21,7 +21,6 @@ def show_charts():
     # Close the connection
     connection.close()
 
-    return render_template("charts.html", labels=[10, 20, 30, 40], values=[30, 45, 50, 60])
-
-
-
+    return render_template(
+        "charts.html", labels=[10, None, None, 40], values=[30, None, None, 60]
+    )
