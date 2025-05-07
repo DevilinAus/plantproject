@@ -1,11 +1,13 @@
 import sqlite3
 import datetime
 from datetime import timedelta
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 # TODO make this function scaleable - it would be good if it could be passed in the hour so it
 # could loop over hours gone.
 def average_raw_data():
+    print("Running!")
     # this should be triggered every hour.
 
     # get current timestamp (end?)
@@ -71,4 +73,8 @@ def average_raw_data():
     connection.close()
 
 
-average_raw_data()
+scheduler = BlockingScheduler()
+scheduler.add_job(average_raw_data, "interval", hours=1)
+scheduler.start()
+
+# average_raw_data()

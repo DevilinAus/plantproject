@@ -1,9 +1,5 @@
 from flask import render_template
-
 import sqlite3
-import random
-import time
-
 
 from . import charts_bp
 

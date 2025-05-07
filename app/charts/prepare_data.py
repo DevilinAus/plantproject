@@ -1,6 +1,5 @@
 import sqlite3
-import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 max_data_points = {"1d": 24, "1w": 10080, "1m": 44640}
 
@@ -28,6 +27,8 @@ def prepare_data(timeframe):
         )
         rows = cursor.fetchall()
 
+    # print(f"Printing rows[1]:{rows[1]}")
+
     # Close the connection
     connection.close()
 
@@ -35,16 +36,20 @@ def prepare_data(timeframe):
     #     "labels": ["2025-05-01 10:00", "2025-05-01 11:00", "2025-05-01 12:00"],
     #     "values": [30, 35, 28],
     # }
-    print(type(max_data_points))
+    # print(type(max_data_points))
 
     response_data = {
         "labels": [None] * max_data_points[timeframe],
         "values": [None] * max_data_points[timeframe],
     }
 
-    now = datetime.datetime.now()
+    now = datetime.now()
     rounded_now = now.replace(minute=0, second=0, microsecond=0)
     # TODO REMOVE THIS & MODIFY TO HANDLE DIFFERENT TIMEFRAMES
+    #
+    #
+    #
+
     # SET LABELS
     if timeframe == "1d":
         for i in range(max_data_points[timeframe]):  # 0-24
@@ -52,16 +57,37 @@ def prepare_data(timeframe):
             formatted_time = unformatted_time.strftime("%I:%M %p")
             response_data["labels"][i] = formatted_time
 
-    print(response_data)
+    print(f"Response_data = {response_data}")
 
-    print(f"Test Printing Rows {rows}")
-    # TODO - NEED TO DO SOME AVERAGING MATH ON THIS DATA BEFORE ADDING IT TO DICT SO IT HAS ONE VALUE
-    # PER HOUR NOT 60 PER HOUR AND GENERATE NEW LABELS. (maybe less for weekly/monthly? )
-    for row in rows:
-        response_data["labels"].append(row[0])
-        response_data["values"].append(row[1])
+    # print(f"Print rows: {rows}")
 
-    # print(map(to_model, rows))
+    for i, row in enumerate(rows):
+        current_value = row[1]
+        datetime_str = row[0]
+        datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+        formatted_time_2 = datetime_obj.strftime("%I:%M %p")
 
-    print("returning data")
+        # print(
+        #     f"Formatted Time2= {formatted_time_2}. Response_data label= {response_data['labels'][i]}"
+        # )
+
+        for j, label in enumerate(response_data["labels"]):
+            print(
+                f"Formatted Time2= {formatted_time_2}. Response_data label= {response_data['labels'][j]}"
+            )
+            if formatted_time_2 == response_data["labels"][j]:
+                # response_data["values"] = row[1]
+                print(f"TRUE || {formatted_time_2} = {response_data['labels'][j]}")
+                response_data["values"][j] = current_value
+        # internal loop, loop the row label through all the options in the response data
+
+        # print(f"setting value")
+        # print(datetime_obj)
+        # formatted_row = raw_row.strftime("%I:%M %p")
+
+    #     for j in response_data["labels"]:
+    #         if response_data["labels"][j] == rows[i]:
+    #             response_data["values"][j] = rows[i]
+
+    print(f"returning data \n: {response_data}")
     return response_data
