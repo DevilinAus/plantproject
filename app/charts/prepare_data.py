@@ -1,29 +1,23 @@
 import sqlite3
 from datetime import datetime, timedelta
+from config import MAX_DATA_POINTS
+import db
 
-max_data_points = {"1d": 24, "1w": 10080, "1m": 44640}
+
+def get_max_data_points(timeframe):
+    data_limit = MAX_DATA_POINTS.get(timeframe, 0)
+    return data_limit
 
 
 def prepare_data(timeframe):
     # lookup the timeframe against max_data_point dict, if it isn't found returns default 0
-    data_limit = max_data_points.get(timeframe, 0)
+    data_points = get_max_data_points(timeframe)
 
-    # Reconnect to the DB
-    connection = sqlite3.connect("plant_info.db")
-    cursor = connection.cursor()
-
-    if timeframe == "1d":
-        cursor.execute(
-            "SELECT * FROM avg_data ORDER BY date_time DESC LIMIT ?", (data_limit,)
-        )
-        rows = cursor.fetchall()
-
-    # Close the connection
-    connection.close()
+    rows = db.fetch("avg_data", data_points)
 
     response_data = {
-        "labels": [None] * max_data_points[timeframe],
-        "values": [None] * max_data_points[timeframe],
+        "labels": [None] * data_points,
+        "values": [None] * data_points,
     }
 
     now = datetime.now()
@@ -31,7 +25,7 @@ def prepare_data(timeframe):
 
     # SET LABELS
     if timeframe == "1d":
-        for i in range(max_data_points[timeframe]):  # 0-24
+        for i in range(data_points):  # 0-24
             unformatted_time = rounded_now - timedelta(hours=i)
             formatted_time = unformatted_time.strftime("%I:%M %p")
             response_data["labels"][i] = formatted_time
@@ -52,15 +46,6 @@ def prepare_data(timeframe):
                 # response_data["values"] = row[1]
                 print(f"TRUE || {formatted_time_2} = {response_data['labels'][j]}")
                 response_data["values"][j] = current_value
-        # internal loop, loop the row label through all the options in the response data
-
-        # print(f"setting value")
-        # print(datetime_obj)
-        # formatted_row = raw_row.strftime("%I:%M %p")
-
-    #     for j in response_data["labels"]:
-    #         if response_data["labels"][j] == rows[i]:
-    #             response_data["values"][j] = rows[i]
 
     print(f"returning data \n: {response_data}")
     return response_data
