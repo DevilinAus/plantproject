@@ -5,45 +5,68 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 import db
 
 
+def round_down_to_hour(timestamp):
+    return timestamp - (timestamp % 3600)
+
+
+# New plan - the average data can never be allowed to run without using the checkpoint,
+# Otherwise you could have new data processed and stored in the DB out of order?
 def average_raw_data_loop(full_run=0):
     start_time = datetime.datetime.now()
     start_time = start_time.timestamp()
 
-    #get the last finalised time 
-    last_finalised = db.fetch("data_checkpoint",1)
+    # get the last finalised time
+    last_checkpoint = db.fetch("data_checkpoint", 1, "key")
+    print(last_checkpoint)
+
+    if not last_checkpoint:
+        print("No checkpoint found, doing a full run.")
+        # If no checkpoint exists, assume first run and loop average raw data from now to the start.
+
+        # get the earliest point in the database.
+
+        oldest_timestamp = db.fetch("raw_data", 1, order="ASC")
+        oldest_timestamp = oldest_timestamp[0][0]
+        print(oldest_timestamp)
+        print(type(oldest_timestamp))
+        oldest_rounded_down = round_down_to_hour(oldest_timestamp)
+
+        while oldest_rounded_down < start_time:
+            print("Starting loop from start of found values")
+            average_raw_data(oldest_rounded_down)
+            oldest_rounded_down += 3600
+
+    # current_timestamp = last_checkpoint
+    # print(current_timestamp)
+    # while
+
+    # average_raw_data(start_time)
 
     # get list of unfinalised data.
-    unfinalised_data =  
+    # unfinalised_data =
 
-    #loop them into average_raw_data()
+    # loop them into average_raw_data()
 
-    #update last_finalised in data checkpoint DB
+    # update last_finalised in data checkpoint DB
 
-# TODO make this function scaleable - it would be good if it could be passed in the hour so it
-# could loop over hours gone.
-def average_raw_data():
+
+def average_raw_data(timestamp_to_process):
     print("Average Raw Data Processing!")
     # this should be triggered every hour.
 
-    # get current timestamp (end?)
-    now = datetime.datetime.now()
-    rounded_now = now.replace(minute=0, second=0, microsecond=0)
+    # # get current timestamp (end?)                   I DONT THINK I NEED THIS WITH ALWAYS HANDING IN TIMESTAMP
+    # now = datetime.datetime.now()
+    # rounded_now = now.replace(minute=0, second=0, microsecond=0)
 
     # work out what timestamp it was an hour ago(start)
-    one_hour_ago = rounded_now - timedelta(hours=1)                 
+    one_hour_ago = timestamp_to_process - 3600
 
-    # convert times to database friendly timestamps
-    now_timestamp = rounded_now.timestamp()
-    one_hour_ago_timestamp = one_hour_ago.timestamp()
-
-    # figure out what the hour is in local time
-    this_hour = rounded_now.hour
-
-    print(this_hour)
+    print(f"Timestamp to process is: {timestamp_to_process}")
+    print(f"An hour ago is: {one_hour_ago}")
 
     # Fetch data
-    rows = db.fetch_between(one_hour_ago_timestamp, now_timestamp)
-    
+    rows = db.fetch_between("raw_data", timestamp_to_process, one_hour_ago)
+
     # count how many data points
     reading_count = 0
     total_reading_value = 0
@@ -52,10 +75,9 @@ def average_raw_data():
         reading_count += 1
         total_reading_value += row[1]
 
-    # Same as the above but untested. 
+    # Same as the above but untested.
     # reading_count = len(rows)
-    # total_reading_value = sum(row[1] for row in rows)   
-
+    # total_reading_value = sum(row[1] for row in rows)
 
     print(reading_count)
     print(total_reading_value)
@@ -68,27 +90,28 @@ def average_raw_data():
 
     print(average_reading)
 
-    db.store_data(now_timestamp,  )
+    # db.store_data(timestamp, readable_text, average_reading, table)
 
-                # store that data with current date and hour (for label) in cleaned DB.
-                connection = sqlite3.connect("plant_info.db")
-                cursor = connection.cursor()
-                cursor.execute(
-                    """INSERT INTO avg_data (date_time, readable_text, moisture_reading) 
-                    VALUES (?, ?, ?)
-                    ON CONFLICT(date_time)
-                    DO UPDATE SET moisture_reading = excluded.moisture_reading""",
-                    (one_hour_ago_timestamp, one_hour_ago, average_reading),
-                )
-                print(
-                    f"Wrote to DB -- TIMESTAMP: {one_hour_ago_timestamp} READBLE: {one_hour_ago}, READING: {average_reading}"
-                )
-                connection.commit()
-                connection.close()
+    # store that data with current date and hour (for label) in cleaned DB.
+    connection = sqlite3.connect("plant_info.db")
+    connection.execute("PRAGMA journal_mode=WAL;")
+    cursor = connection.cursor()
+    cursor.execute(
+        """INSERT INTO avg_data (date_time, readable_time, moisture_reading)
+        VALUES (?, ?, ?)
+        ON CONFLICT(date_time)
+        DO UPDATE SET moisture_reading = excluded.moisture_reading""",
+        (one_hour_ago, one_hour_ago, average_reading),
+    )
+    print(
+        f"Wrote to DB -- TIMESTAMP: {one_hour_ago} READBLE: {one_hour_ago}, READING: {average_reading}"
+    )
+    connection.commit()
+    connection.close()
 
 
-scheduler = BlockingScheduler()
-scheduler.add_job(average_raw_data, "interval", hours=1)
-scheduler.start()
+# scheduler = BlockingScheduler()
+# scheduler.add_job(average_raw_data, "interval", hours=1)
+# scheduler.start()
 
-# average_raw_data()
+average_raw_data_loop()

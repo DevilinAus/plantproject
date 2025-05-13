@@ -2,21 +2,30 @@ var ctx = document.getElementById("chart").getContext("2d");
 var chart = new Chart(ctx, {
   type: "line",
   data: {
-    labels: ["2025-05-01 10:00", "2025-05-01 11:00", "2025-05-01 12:00"],
     datasets: [
       {
-        label: "Moisture Reading",
-        data: [30, 35, 28],
+        label: "Soil Dryness Scale",
+        data: initialData,
         fill: false,
-        borderColor: "rgb(75, 192, 192)",
+        borderColor: "rgb(0, 158, 29)",
         // TODO - DEFINE A CUSTOM COLOUR WHEN NOT USING CDN
-
-        tension: 0.1,
+        tension: 0.2,
       },
     ],
   },
   options: {
     responsive: false,
+    scales: {
+      x: {
+        type: "time",
+        time: {
+          unit: "hour",
+        },
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
   },
 });
 
@@ -67,7 +76,6 @@ async function fetchData(timeframe) {
 
 function updateChart(chartData) {
   // update the chart with the fresh data
-  chart.data.labels = chartData.labels;
-  chart.data.datasets[0].data = chartData.values;
+  chart.data.datasets[0].data = chartData;
   chart.update();
 }

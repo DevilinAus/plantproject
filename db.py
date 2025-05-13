@@ -6,8 +6,8 @@ from config import DB_PATH
 # in the type of search.
 
 
-def fetch(table, data_limit):
-    query = f"SELECT * FROM {table} ORDER BY date_time DESC LIMIT ?"
+def fetch(table, data_limit, column="date_time", order="DESC"):
+    query = f"SELECT * FROM {table} ORDER BY {column} {order} LIMIT ?"
 
     # Reconnect to the DB
     connection = sqlite3.connect(DB_PATH)
@@ -21,17 +21,20 @@ def fetch(table, data_limit):
     return rows
 
 
-def fetch_between(start_time, end_time):
+def fetch_between(table, newest_time, oldest_time):
     # query the raw db for every datapoint between the start and the end time
     connection = sqlite3.connect(DB_PATH)
     cursor = connection.cursor()
 
-    cursor.execute(
-        "SELECT * FROM minute_reading WHERE date_time BETWEEN ? AND ? ORDER BY date_time DESC",
-        (start_time, end_time),
-    )
+    query = f"""
+        SELECT * FROM {table}
+        WHERE date_time BETWEEN ? AND ?
+        ORDER BY date_time DESC
+    """
+
+    cursor.execute(query, (oldest_time, newest_time))
     rows = cursor.fetchall()
-    print(rows)
+    print(f"Rows: {rows}")
 
     connection.close()
     return rows

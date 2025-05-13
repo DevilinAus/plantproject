@@ -2,13 +2,13 @@ import time
 import sqlite3
 import datetime
 import requests
+# from config import ip, finish this when it's not running.
 
 # Define the Ardiuno IP here: NOTE - This is set statically via a static lease on router.
 ARDUINO_IP = "192.168.0.99"
 
 
 def get_sensor_data():
-
     # Define the url. Can add query parameters here for cool future features
     url = f"http://{ARDUINO_IP}/"
 
@@ -29,7 +29,6 @@ def get_sensor_data():
 
 
 def wait_calculation():
-
     # Calculate the time since Epoch
     epoch_time = int(time.time())
 
@@ -44,7 +43,6 @@ def wait_calculation():
 def main():
     print("Application Starting!")
     while True:
-
         # Run function to figure out how long to sleep until the next minute.
         wait_calculation()
 
@@ -54,9 +52,10 @@ def main():
         last_generated = get_sensor_data()
 
         connection = sqlite3.connect("plant_info.db")
+        connection.execute("PRAGMA journal_mode=WAL;")
         cursor = connection.cursor()
         cursor.execute(
-            "INSERT INTO minute_reading (date_time, moisture_reading) VALUES (?, ?)",
+            "INSERT INTO raw_data (date_time, moisture_reading) VALUES (?, ?)",
             (time_collected, last_generated),
         )
         print(f"Wrote to DB -- TIME:{time_collected}, READING:{last_generated}")

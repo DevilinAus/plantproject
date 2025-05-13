@@ -1,4 +1,4 @@
-MAX_DATA_POINTS = {"1d": 24, "1w": 10080, "1m": 44640}
+ARDUINO_IP = "192.168.0.99"
 
 DB_PATH = "plant_info.db"
 

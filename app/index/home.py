@@ -3,15 +3,15 @@ from . import index_bp  # if your route handlers are in index.py
 
 import sqlite3
 
+
 @index_bp.route("/")
 def show_homepage():
-
     # Reconnect to the DB
     connection = sqlite3.connect("plant_info.db")
     cursor = connection.cursor()
 
     # Fetch the last 30 entries of moisture data from the database and assign them to a variable
-    cursor.execute("SELECT * FROM minute_reading ORDER BY date_time DESC LIMIT 1")
+    cursor.execute("SELECT * FROM raw_data ORDER BY date_time DESC LIMIT 1")
     rows = cursor.fetchone()
     raw_moisture_reading = rows[1]
 
@@ -32,25 +32,20 @@ def show_homepage():
 
 
 def translate_moisture(reading):
-
     # assume zero to be currently wet.
     # 500 seems to maximum reading in air, unsure about soil
 
     if reading == 0:
-        translated_moisture_string = f"Can't get any wetter! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+        translated_moisture_string = f"Can't get any wetter! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
     elif reading <= 100:
-        translated_moisture_string = (
-            f"Soaked! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
-        )
+        translated_moisture_string = f"Soaked! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
     elif reading <= 200:
-        translated_moisture_string = (
-            f"Nice and moist! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
-        )
+        translated_moisture_string = f"Nice and moist! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
     elif reading <= 300:
-        translated_moisture_string = f"Average, if no rain due consider watering! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+        translated_moisture_string = f"Average, if no rain due consider watering! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
     elif reading <= 400:
-        translated_moisture_string = f"It's time to water! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+        translated_moisture_string = f"It's time to water! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
     elif reading <= 400:
-        translated_moisture_string = f"Sahara Desert, they're probably dead. Water immediately! <br/> Reading: {reading} <br/> Wetness Estimation: {(500-reading)/5}%"
+        translated_moisture_string = f"Sahara Desert, they're probably dead. Water immediately! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
 
     return translated_moisture_string
