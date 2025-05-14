@@ -110,8 +110,8 @@ def average_raw_data(timestamp_to_process):
     connection.close()
 
 
+average_raw_data_loop()
+
 # scheduler = BlockingScheduler()
 # scheduler.add_job(average_raw_data, "interval", hours=1)
 # scheduler.start()
-
-average_raw_data_loop()

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="flex justify-center mt-8">
+        <div class="w-[1000px] p-8 rounded-lg shadow">
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th class ="text-lg font-bold text-primary">Soil Moisture Stats</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Minimum Moisture Recorded</td>
+                            <td>{{ min_moisture }}</td>
+                        </tr>
+                        <tr>
+                            <td>Maximum Moisture Recorded</td>
+                            <td>{{ max_moisture }}</td>
+                        </tr>
+                        <tr>
+                            <td>Calculated Average Moisture</td>
+                            <td>{{ avg_moisture }}</td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th class ="text-lg font-bold text-info">Arduino Stats</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Current WiFi Strength</td>
+                            <td>str</td>
+                        </tr>
+                        <tr>
+                            <td>Data Logged Completion</td>
+                            <td>uptime</td>
+                        </tr>
+                        <tr>
+                            <td>Empty Field</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+{% endblock scripts %}

@@ -1,5 +1,5 @@
 from flask import render_template
-from . import index_bp  # if your route handlers are in index.py
+from . import index_bp
 
 import sqlite3
 

@@ -6,8 +6,8 @@ from config import DB_PATH
 # in the type of search.
 
 
-def fetch(table, data_limit, column="date_time", order="DESC"):
-    query = f"SELECT * FROM {table} ORDER BY {column} {order} LIMIT ?"
+def fetch(table, data_limit, column="date_time", order="DESC", select="*"):
+    query = f"SELECT {select} FROM {table} ORDER BY {column} {order} LIMIT ?"
 
     # Reconnect to the DB
     connection = sqlite3.connect(DB_PATH)
@@ -15,6 +15,9 @@ def fetch(table, data_limit, column="date_time", order="DESC"):
 
     cursor.execute(query, (data_limit,))
     rows = cursor.fetchall()
+
+    if select.strip().upper().startswith(("MIN(", "MAX(", "COUNT(", "AVG(", "SUM(")):
+        return rows[0][0]
 
     # Close the connection
     connection.close()

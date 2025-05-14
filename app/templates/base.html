@@ -41,7 +41,7 @@
               <a href="{{ url_for('charts.show_charts') }}">Charts</a>
             </li>
             <li>
-              <a>Item 2</a>
+              <a href="{{ url_for('stats.show_stats') }}">Stats</a>
             </li>
           </ul>
         </details>
@@ -70,14 +70,14 @@
               {{ message }}
               <button type="button"
                       class="ml-4 text-white"
-                      onclick="this.parentElement.style.display='none'">&times;</button>
+                      onclick="this.parentElement.style.display='none'">×</button>
             </div>
           {% else %}
             <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
               {{ message }}
               <button type="button"
                       class="ml-4 text-white"
-                      onclick="this.parentElement.style.display='none'">&times;</button>
+                      onclick="this.parentElement.style.display='none'">×</button>
             </div>
           {% endif %}
         {% endfor %}
