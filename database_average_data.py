@@ -52,11 +52,6 @@ def average_raw_data_loop(full_run=0):
 
 def average_raw_data(timestamp_to_process):
     print("Average Raw Data Processing!")
-    # this should be triggered every hour.
-
-    # # get current timestamp (end?)                   I DONT THINK I NEED THIS WITH ALWAYS HANDING IN TIMESTAMP
-    # now = datetime.datetime.now()
-    # rounded_now = now.replace(minute=0, second=0, microsecond=0)
 
     # work out what timestamp it was an hour ago(start)
     one_hour_ago = timestamp_to_process - 3600
@@ -94,6 +89,10 @@ def average_raw_data(timestamp_to_process):
 
     # store that data with current date and hour (for label) in cleaned DB.
     connection = sqlite3.connect("plant_info.db")
+    write_to_db(one_hour_ago, average_reading, connection)
+
+
+def write_to_db(one_hour_ago, average_reading, connection):
     connection.execute("PRAGMA journal_mode=WAL;")
     cursor = connection.cursor()
     cursor.execute(
@@ -110,8 +109,8 @@ def average_raw_data(timestamp_to_process):
     connection.close()
 
 
-average_raw_data_loop()
+# average_raw_data_loop()
 
-# scheduler = BlockingScheduler()
-# scheduler.add_job(average_raw_data, "interval", hours=1)
-# scheduler.start()
+scheduler = BlockingScheduler()
+scheduler.add_job(average_raw_data, "interval", hours=1)
+scheduler.start()
