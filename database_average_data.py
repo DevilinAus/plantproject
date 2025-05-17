@@ -109,8 +109,7 @@ def write_to_db(one_hour_ago, average_reading, connection):
     connection.close()
 
 
-# average_raw_data_loop()
-
-scheduler = BlockingScheduler()
-scheduler.add_job(average_raw_data, "interval", hours=1)
-scheduler.start()
+def main():
+    scheduler = BlockingScheduler()
+    scheduler.add_job(average_raw_data, "interval", hours=1)
+    scheduler.start()

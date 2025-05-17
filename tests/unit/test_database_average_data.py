@@ -16,7 +16,7 @@ def describe_average_raw_data():
         func.assert_called()
         func.assert_any_call(4, 10)
         func.assert_any_call(4, 4)
-        func.assert_not_called()
+        # func.assert_not_called()
 
     def test_2():
         mock_cursor = Mock()
