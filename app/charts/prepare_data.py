@@ -31,7 +31,7 @@ def prepare_data(timeframe):
 
     for row in rows:
         label = row[0]
-        value = row[2]
+        value = row[1]
         print(f"{label} & {value}")
         current_datapoint = construct_datapoint(label, value)
         response_data.append(current_datapoint)
