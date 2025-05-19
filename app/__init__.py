@@ -50,6 +50,7 @@ def create_app():
     from app.admin import admin_bp
     from app.charts.api import api_bp
     from app.stats import stats_bp
+    from app.dashboard import dashboard_bp
 
     app.register_blueprint(index_bp)
     app.register_blueprint(charts_bp)
@@ -57,5 +58,6 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(api_bp)
     app.register_blueprint(stats_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app
