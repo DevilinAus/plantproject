@@ -1,5 +1,6 @@
 from flask import render_template
 from . import index_bp
+from db import get_connection
 
 import sqlite3
 
@@ -7,7 +8,7 @@ import sqlite3
 @index_bp.route("/")
 def show_homepage():
     # Reconnect to the DB
-    connection = sqlite3.connect("plant_info.db")
+    connection = get_connection()
     cursor = connection.cursor()
 
     # Fetch the last 30 entries of moisture data from the database and assign them to a variable

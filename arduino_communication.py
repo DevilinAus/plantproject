@@ -3,7 +3,8 @@ import datetime
 import requests
 import json
 from apscheduler.schedulers.blocking import BlockingScheduler
-from config import ARDUINO_IP
+from config import ARDUINO_IP, DB_PATH
+from db import get_connection
 import time
 
 
@@ -35,8 +36,7 @@ def main():
     last_generated = get_sensor_data()
 
     # TODO - Use External DB Function Here.
-    connection = sqlite3.connect("plant_info.db")
-    connection.execute("PRAGMA journal_mode=WAL;")
+    connection = get_connection
     cursor = connection.cursor()
     cursor.execute(
         "INSERT INTO raw_data (date_time, moisture_reading) VALUES (?, ?)",

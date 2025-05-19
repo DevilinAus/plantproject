@@ -10,7 +10,7 @@ def fetch(table, data_limit, column="date_time", order="DESC", select="*"):
     query = f"SELECT {select} FROM {table} ORDER BY {column} {order} LIMIT ?"
 
     # Reconnect to the DB
-    connection = sqlite3.connect(DB_PATH)
+    connection = get_connection()
     cursor = connection.cursor()
 
     cursor.execute(query, (data_limit,))
@@ -24,9 +24,15 @@ def fetch(table, data_limit, column="date_time", order="DESC", select="*"):
     return rows
 
 
+def get_connection():
+    connection = sqlite3.connect(DB_PATH)
+    connection.execute("PRAGMA journal_mode=WAL;")
+    return connection
+
+
 def fetch_between(table, newest_time, oldest_time):
     # query the raw db for every datapoint between the start and the end time
-    connection = sqlite3.connect(DB_PATH)
+    connection = get_connection()
     cursor = connection.cursor()
 
     query = f"""
@@ -44,19 +50,17 @@ def fetch_between(table, newest_time, oldest_time):
 
 
 # TODO return an OK or Error.
-def store_data(timestamp, readable_text, average_reading, table):
+def store_data(timestamp, average_reading, table):
     # store that data with current date and hour (for label) in cleaned DB.
-    connection = sqlite3.connect(DB_PATH)
+    connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        """INSERT INTO avg_data (date_time, readable_text, moisture_reading) 
-                    VALUES (?, ?, ?)
+        """INSERT INTO avg_data (date_time, moisture_reading) 
+                    VALUES (?, ?)
                     ON CONFLICT(date_time)
                     DO UPDATE SET moisture_reading = excluded.moisture_reading""",
-        (timestamp, readable_text, average_reading),
+        (timestamp, average_reading),
     )
-    print(
-        f"Wrote to DB -- TIMESTAMP: {timestamp} READBLE: {readable_text}, READING: {average_reading}"
-    )
+    print(f"Wrote to DB -- TIMESTAMP: {timestamp} READING: {average_reading}")
     connection.commit()
     connection.close()

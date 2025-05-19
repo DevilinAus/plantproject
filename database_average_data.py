@@ -3,6 +3,8 @@ import datetime
 from datetime import timedelta
 from apscheduler.schedulers.blocking import BlockingScheduler
 import db
+from db import get_connection
+from config import DB_PATH
 
 
 def round_down_to_hour(timestamp):
@@ -83,28 +85,19 @@ def average_raw_data(timestamp_to_process):
     else:
         average_reading = None
 
-    print(average_reading)
-
-    # db.store_data(timestamp, readable_text, average_reading, table)
-
-    # store that data with current date and hour (for label) in cleaned DB.
-    connection = sqlite3.connect("plant_info.db")
-    write_to_db(one_hour_ago, average_reading, connection)
+    write_to_db(one_hour_ago, average_reading, get_connection())
 
 
 def write_to_db(one_hour_ago, average_reading, connection):
-    connection.execute("PRAGMA journal_mode=WAL;")
     cursor = connection.cursor()
     cursor.execute(
-        """INSERT INTO avg_data (date_time, readable_time, moisture_reading)
-        VALUES (?, ?, ?)
+        """INSERT INTO avg_data (date_time, moisture_reading)
+        VALUES (?, ?)
         ON CONFLICT(date_time)
         DO UPDATE SET moisture_reading = excluded.moisture_reading""",
-        (one_hour_ago, one_hour_ago, average_reading),
+        (one_hour_ago, average_reading),
     )
-    print(
-        f"Wrote to DB -- TIMESTAMP: {one_hour_ago} READBLE: {one_hour_ago}, READING: {average_reading}"
-    )
+    print(f"Wrote to DB -- TIMESTAMP: {one_hour_ago}, READING: {average_reading}")
     connection.commit()
     connection.close()
 
