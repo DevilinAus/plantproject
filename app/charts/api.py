@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .prepare_data import prepare_data
+from .prepare_data import prepare_data, prepare_dashboard_info
 
 api_bp = Blueprint("api", __name__, url_prefix="/api", template_folder="templates")
 
@@ -14,3 +14,11 @@ def get_readings():
 
     print("sending data to client")
     return prepare_data(timeframe)
+
+
+@api_bp.route("/dashboard", methods=["GET"])
+def get_dashboard_info():
+    dashboard_info = prepare_dashboard_info()
+
+    print("sending data to dashboard")
+    return dashboard_info

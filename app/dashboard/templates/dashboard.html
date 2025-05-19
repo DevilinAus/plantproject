@@ -1,101 +1,268 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>Plant Health Dashboard</title>
-  <style>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Enchanted Grove</title>
+    <style>
     /* RESET FOR OLD SAFARI */
     body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, Helvetica; }
     /* LANDSCAPE LAYOUT (fixed for iPad Mini 1) */
-    body { width: 1024px; height: 768px; background: #f0f4f0; color: #333; position: relative; }
-    /* HEADER */
-    .header { position: absolute; top: 0; left: 0; right: 0; height: 60px; background: #2c5e3a; color: white; }
-    .header h1 { margin: 12px 0 0 20px; font-size: 24px; padding-top: 10px }
-    /* SIDEBAR */
-    .sidebar { position: absolute; top: 60px; bottom: 0; left: 0; width: 200px; background: #fff; border-right: 1px solid #ddd; }
-    .sidebar-nav { list-style: none; padding: 20px 0; }
-    .sidebar-nav li { padding: 10px 20px; border-bottom: 1px solid #eee; }
-    .sidebar-nav li.active { background: #e8f4ea; font-weight: bold; }
-    /* MAIN CONTENT */
-    .main { position: absolute; top: 60px; left: 200px; right: 0; bottom: 0; padding: 20px; overflow-y: auto; }
-    /* CARDS */
-    .card { background: white; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; padding: 15px; }
-    .card-title { font-size: 18px; margin: 0 0 10px 0; color: #2c5e3a; }
-    /* PLANT STATUS GRID (using floats for compatibility) */
+    body { 
+      width: 1024px; 
+      height: 768px; 
+      background: #e8f0e1; 
+      color: #3a2c16; 
+      position: relative; 
+      background-image: linear-gradient(to bottom, #f5f9ee 0%, #e8f0e1 100%);
+    }
+    /* HEADER - Mushroom cap inspired */
+    .header { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      height: 60px; 
+      background: #5a3a2c;
+      background-image: linear-gradient(to right, #6b4a3a 0%, #5a3a2c 50%, #6b4a3a 100%);
+      color: #f0e4d4; 
+      box-shadow: 0 2px 10px rgba(58, 44, 22, 0.3);
+      border-bottom: 2px solid #8a6d4b;
+    }
+    .header h1 { 
+      margin: 12px 0 0 20px; 
+      font-size: 24px; 
+      padding-top: 10px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      letter-spacing: 1px;
+    }
+    /* SIDEBAR - Tree bark texture */
+    .sidebar { 
+      position: absolute; 
+      top: 60px; 
+      bottom: 0; 
+      left: 0; 
+      width: 200px; 
+      background: #4a3a2c;
+      background-image: linear-gradient(to right, #3a2a1c 0%, #4a3a2c 20%, #4a3a2c 80%, #3a2a1c 100%);
+      border-right: 2px solid #8a6d4b;
+    }
+    .sidebar-nav { 
+      list-style: none; 
+      padding: 20px 0; 
+    }
+    .sidebar-nav li { 
+      padding: 12px 20px; 
+      border-bottom: 1px solid #5a4a3c; 
+      color: #d8ccbc;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    .sidebar-nav li.active { 
+      background: #6b5a4c; 
+      font-weight: bold; 
+      color: #f8e8d8;
+      text-shadow: 0 0 5px rgba(255,215,140,0.5);
+      border-left: 3px solid #c8a878;
+    }
+    /* MAIN CONTENT - Parchment-like */
+    .main { 
+      position: absolute; 
+      top: 60px; 
+      left: 200px; 
+      right: 0; 
+      bottom: 0; 
+      padding: 20px; 
+      overflow-y: auto; 
+      background: #f5f0e1;
+      background-image: radial-gradient(ellipse at center, #fff9e8 0%, #f5f0e1 100%);
+    }
+    /* CARDS - Leaf-inspired */
+    .card { 
+      background: #fff; 
+      border-radius: 8px; 
+      box-shadow: 0 3px 8px rgba(58, 44, 22, 0.1); 
+      margin-bottom: 20px; 
+      padding: 15px; 
+      border: 1px solid #d8c8a8;
+      background-image: linear-gradient(to bottom, #ffffff 0%, #f8f4e8 100%);
+    }
+    .card-title { 
+      font-size: 18px; 
+      margin: 0 0 10px 0; 
+      color: #5a6b3a;
+      border-bottom: 1px dashed #c8b878;
+      padding-bottom: 8px;
+    }
+    /* PLANT STATUS GRID */
     .plant-grid { overflow: hidden; }
-    .plant-item { float: left; width: 30%; margin: 0 1.5% 20px 1.5%; text-align: center; }
-    .plant-icon { width: 50px; height: 50px; background: #8bc34a; border-radius: 50%; margin: 0 auto 10px; line-height: 50px; color: white; }
-    .plant-name { font-weight: bold; }
-    .plant-status { font-size: 12px; color: #666; }
-    .plant-status.alert { color: #e74c3c; }
-    /* GAUGE (simple CSS-only) */
-    .gauge { height: 10px; background: #eee; border-radius: 5px; margin: 10px 0; }
-    .gauge-fill { height: 10px; border-radius: 5px; background: #2c5e3a; width: 70%; }
+    .plant-item { 
+      float: left; 
+      width: 30%; 
+      margin: 0 1.5% 20px 1.5%; 
+      text-align: center; 
+      transition: all 0.3s ease;
+    }
+    .plant-item:hover {
+      transform: translateY(-3px);
+    }
+    .plant-icon { 
+      width: 60px; 
+      height: 60px; 
+      background: #8a9c5a;
+      background-image: radial-gradient(ellipse at center, #a8bc7a 0%, #8a9c5a 100%);
+      border-radius: 50%; 
+      margin: 0 auto 10px; 
+      line-height: 60px; 
+      color: white; 
+      font-size: 28px;
+      box-shadow: 0 3px 6px rgba(58, 44, 22, 0.2);
+      text-shadow: 0 2px 3px rgba(0,0,0,0.2);
+      border: 2px solid #c8d8a8;
+    }
+    .plant-name { 
+      font-weight: bold; 
+      color: #5a3a2c;
+    }
+    .plant-status { 
+      font-size: 13px; 
+      color: #7a6b5c; 
+    }
+    .plant-status.alert { 
+      color: #d85a4a;
+      font-weight: bold;
+    }
+    /* GAUGE - Mushroom stem inspired */
+    .gauge { 
+      height: 12px; 
+      background: #e8d8c8; 
+      border-radius: 6px; 
+      margin: 12px 0; 
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .gauge-fill { 
+      height: 12px; 
+      border-radius: 6px; 
+      background: #8a6d4b;
+      background-image: linear-gradient(to right, #9a7d5b 0%, #8a6d4b 50%, #7a5d3b 100%);
+      box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+      min-width: 12px;
+    }
+    /* METRIC LABELS */
+    p {
+      margin: 8px 0;
+      color: #5a4a3c;
+    }
     /* RESPONSIVE TEXT SIZES */
-    @media (max-width: 1024px) { body { font-size: 14px; } }
-  </style>
-</head>
-<body>
-  <!-- HEADER -->
-  <div class="header">
-    <h1>Plant Health Dashboard</h1>
-  </div>
-  
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <ul class="sidebar-nav">
-      <li class="active">Overview</li>
-      <li>Alerts</li>
-      <li>Species</li>
-      <li>Settings</li>
-    </ul>
-  </div>
-  
-  <!-- MAIN CONTENT -->
-  <div class="main">
-    <!-- STATUS SUMMARY -->
-    <div class="card">
-      <h2 class="card-title">Plant Status</h2>
-      <div class="plant-grid">
-        <!-- <div class="plant-item">
-          <div class="plant-icon">🌱</div>
-          <div class="plant-name">Basil</div>
-          <div class="plant-status">Healthy</div>
-        </div> -->
-        <div class="plant-item">
-          <div class="plant-icon">🍅</div>
-          <div class="plant-name">Tomato</div>
-          <div class="plant-status alert">placeholder</div>
+    @media (max-width: 1024px) { 
+      body { font-size: 14px; } 
+      .plant-icon {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 24px;
+      }
+    }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <div class="header">
+      <h1>Plant Care Dashboard</h1>
+    </div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <ul class="sidebar-nav">
+        <li class="active">Overview</li>
+        <li>Alerts</li>
+        <li>Species</li>
+        <li>Settings</li>
+      </ul>
+    </div>
+    <!-- MAIN CONTENT -->
+    <div class="main">
+      <!-- STATUS SUMMARY -->
+      <div class="card">
+        <h2 class="card-title">The Garden Crew</h2>
+        <div class="plant-grid">
+          <div class="plant-item">
+            <div class="plant-icon">🍅</div>
+            <div class="plant-name">Tomato</div>
+            <div class="plant-status" id="tomato-status"></div>
+            <div class="plant-moist" id="tomato-moist"></div>
+          </div>
+          {# <div class="plant-item">
+            <div class="plant-icon"></div>
+            <div class="plant-name">Fairy Caps</div>
+            <div class="status" id="status">placeholder</div>
+          </div>
+          <div class="plant-item">
+            <div class="plant-icon"></div>
+            <div class="plant-name"></div>
+            <div class="plant-status"></div>
+          </div> #}
         </div>
-        <!-- <div class="plant-item">
-          <div class="plant-icon">🍃</div>
-          <div class="plant-name">Fern</div>
-          <div class="plant-status">Stable</div>
-        </div> -->
+      </div>
+      <!-- DATA METRICS -->
+      <div class="card">
+        <h2 class="card-title">Atmosphere</h2>
+        <p>Humidity: 65%</p>
+        <div class="gauge">
+          <div class="gauge-fill" style="width: 65%;"></div>
+        </div>
+        <p>Warmth: 22°C</p>
+        <div class="gauge">
+          <div class="gauge-fill" style="width: 50%;"></div>
+        </div>
+        <p>Light: Moderate</p>
+        <div class="gauge">
+          <div class="gauge-fill" style="width: 40%;"></div>
+        </div>
       </div>
     </div>
-    
-    <!-- DATA METRICS -->
-    <div class="card">
-      <h2 class="card-title">Environment</h2>
-      <p>Humidity: 65%</p>
-      <div class="gauge"><div class="gauge-fill" style="width: 65%;"></div></div>
-      <p>Temperature: 22°C</p>
-      <div class="gauge"><div class="gauge-fill" style="width: 50%;"></div></div>
-      <p>Light Exposure: Moderate</p>
-      <div class="gauge"><div class="gauge-fill" style="width: 40%;"></div></div>
-    </div>
-  </div>
-
-  <!-- MOCK DATA FETCHING (simulated with old JS) -->
-  <script type="text/javascript">
+    <!-- MOCK DATA FETCHING (simulated with old JS) -->
+    <script type="text/javascript">
     // Simulate loading data (iOS 9.3.5 doesn't support fetch(), use XHR)
-    setTimeout(function() {
-      var alertItem = document.querySelector('.plant-status.alert');
-      alertItem.textContent = 'Watered (updated 1 min ago)';
-      alertItem.classList.remove('alert');
-    }, 3000); // Simulate 3-second "data fetch"
-  </script>
-</body>
+    function updateDashboard() {
+      var xhr = new XMLHttpRequest();
+      {# xhr.open("GET", "/api/dashboard", true); #}
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          document.getElementById("tomato-status").textContent = data.status;
+          document.getElementById("tomato-moist").textContent = data.moisture;
+        } else {
+          document.getElementById("status").textContent = "Forest whispers unclear...";
+        }
+      };
+      xhr.onerror = function () {
+        document.getElementById("status").textContent = "Lost connection to the grove";
+      };
+      xhr.send();
+    }
+
+    updateDashboard();               // Initial load
+    setInterval(updateDashboard, 5000);  // Repeat every 5 seconds
+    
+    // Simple animation for plant items
+    function animatePlants() {
+      var plants = document.querySelectorAll('.plant-item');
+      for (var i = 0; i < plants.length; i++) {
+        plants[i].style.opacity = '0';
+        plants[i].style.transform = 'translateY(20px)';
+        (function(i) {
+          setTimeout(function() {
+            plants[i].style.transition = 'all 0.5s ease';
+            plants[i].style.opacity = '1';
+            plants[i].style.transform = 'translateY(0)';
+          }, 100 * i);
+        })(i);
+      }
+    }
+    
+    setTimeout(animatePlants, 500);
+    </script>
+  </body>
 </html>
