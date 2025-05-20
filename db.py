@@ -13,7 +13,7 @@ def fetch(table, data_limit, column="date_time", order="DESC", select="*"):
     connection = get_connection()
     cursor = connection.cursor()
 
-    cursor.execute(query, (data_limit))
+    cursor.execute(query, (data_limit,))
     rows = cursor.fetchall()
 
     if select.strip().upper().startswith(("MIN(", "MAX(", "COUNT(", "AVG(", "SUM(")):
