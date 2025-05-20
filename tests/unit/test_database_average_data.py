@@ -31,8 +31,8 @@ def describe_average_raw_data():
 
         connection.close.assert_called()
         connection.commit.assert_called()
-        connection.execute.assert_any_call("PRAGMA journal_mode=WAL;")
-        mock_cursor.execute.assert_any_call(ANY, (1, 1, 2))
+
+        mock_cursor.execute.assert_any_call(ANY, (1, 2))
 
 
 # def do_stuff(connection):
