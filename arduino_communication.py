@@ -34,7 +34,7 @@ def main():
     last_generated = get_sensor_data()
 
     # TODO - Use External DB Function Here.
-    connection = get_connection
+    connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
         "INSERT INTO raw_data (date_time, moisture_reading) VALUES (?, ?)",
