@@ -1,6 +1,3 @@
-import pytest
-
-
 from unittest.mock import Mock, ANY
 
 from database_average_data import write_to_db

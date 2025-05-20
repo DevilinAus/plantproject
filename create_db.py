@@ -1,5 +1,3 @@
-import sqlite3
-from config import DB_PATH
 from db import get_connection
 
 recreate_raw_db_flag = 0

@@ -1,5 +1,4 @@
 from flask import render_template
-import sqlite3
 from db import get_connection
 
 from . import charts_bp
