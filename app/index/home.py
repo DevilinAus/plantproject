@@ -2,8 +2,6 @@ from flask import render_template
 from . import index_bp
 from db import get_connection
 
-import sqlite3
-
 
 @index_bp.route("/")
 def show_homepage():

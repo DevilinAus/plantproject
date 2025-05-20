@@ -1,4 +1,5 @@
 import db
+from db import get_connection, fetch
 import time
 
 HOURS_DICT = {"1d": 24, "1w": 168, "1m": 720}  # currently assuming 1month = 30days.
@@ -37,3 +38,15 @@ def prepare_data(timeframe):
         response_data.append(current_datapoint)
 
     return response_data
+
+
+def prepare_dashboard_info():
+    connection = get_connection()
+
+    latest_moisture = fetch(
+        "raw:_data", 1, column="date_time", order="DESC", select="moisture_reading"
+    )
+
+    connection.close()
+
+    return {"status": "Healthy", "moisture": latest_moisture}

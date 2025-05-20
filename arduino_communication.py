@@ -1,11 +1,9 @@
-import sqlite3
 import datetime
 import requests
 import json
 from apscheduler.schedulers.blocking import BlockingScheduler
-from config import ARDUINO_IP, DB_PATH
+from config import ARDUINO_IP
 from db import get_connection
-import time
 
 
 def get_sensor_data():
