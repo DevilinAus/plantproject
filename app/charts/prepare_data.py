@@ -47,6 +47,6 @@ def prepare_dashboard_info():
         "raw:_data", 1, column="date_time", order="DESC", select="moisture_reading"
     )
 
-    connection.close
+    connection.close()
 
     return {"status": "Healthy", "moisture": latest_moisture}
