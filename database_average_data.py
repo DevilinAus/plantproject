@@ -17,39 +17,21 @@ def average_raw_data_loop(full_run=0):
     start_time = datetime.datetime.now()
     start_time = start_time.timestamp()
 
-    # get the last finalised time
-    last_checkpoint = db.fetch("data_checkpoint", 1, "key")
-    print(last_checkpoint)
+    print("No checkpoint found, doing a full run.")
+    # If no checkpoint exists, assume first run and loop average raw data from now to the start.
 
-    if not last_checkpoint:
-        print("No checkpoint found, doing a full run.")
-        # If no checkpoint exists, assume first run and loop average raw data from now to the start.
+    # get the earliest point in the database.
 
-        # get the earliest point in the database.
+    oldest_timestamp = db.fetch("raw_data", 1, order="ASC")
+    oldest_timestamp = oldest_timestamp[0][0]
+    print(oldest_timestamp)
+    print(type(oldest_timestamp))
+    oldest_rounded_down = round_down_to_hour(oldest_timestamp)
 
-        oldest_timestamp = db.fetch("raw_data", 1, order="ASC")
-        oldest_timestamp = oldest_timestamp[0][0]
-        print(oldest_timestamp)
-        print(type(oldest_timestamp))
-        oldest_rounded_down = round_down_to_hour(oldest_timestamp)
-
-        while oldest_rounded_down < start_time:
-            print("Starting loop from start of found values")
-            average_raw_data(oldest_rounded_down)
-            oldest_rounded_down += 3600
-
-    # current_timestamp = last_checkpoint
-    # print(current_timestamp)
-    # while
-
-    # average_raw_data(start_time)
-
-    # get list of unfinalised data.
-    # unfinalised_data =
-
-    # loop them into average_raw_data()
-
-    # update last_finalised in data checkpoint DB
+    while oldest_rounded_down < start_time:
+        print("Starting loop from start of found values")
+        average_raw_data(oldest_rounded_down)
+        oldest_rounded_down += 3600
 
 
 def average_raw_data(timestamp_to_process):
