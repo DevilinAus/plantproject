@@ -179,4 +179,6 @@ planning/
 
 bin/
 
-function_example.py
+plant_info.db-shm
+plant_info.db-wal
+app.wsgi
