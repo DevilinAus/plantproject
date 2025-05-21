@@ -10,6 +10,7 @@ from config import DB_PATH
 def round_down_to_hour(timestamp):
     return timestamp - (timestamp % 3600)
 
+def average_raw_data_loop():
 
 # Otherwise you could have new data processed and stored in the DB out of order?
 def average_raw_data_loop(full_run=0):
@@ -28,6 +29,19 @@ def average_raw_data_loop(full_run=0):
         print("Starting loop from start of found values")
         average_raw_data(oldest_rounded_down)
         oldest_rounded_down += 3600
+
+    # current_timestamp = last_checkpoint
+    # print(current_timestamp)
+    # while
+
+    # average_raw_data(start_time)
+
+    # get list of unfinalised data.
+    # unfinalised_data =
+
+    # loop them into average_raw_data()
+
+    # update last_finalised in data checkpoint DB
 
 
 def average_raw_data(timestamp_to_process):
@@ -81,6 +95,9 @@ def write_to_db(one_hour_ago, average_reading, connection):
 
 
 def main():
+    average_raw_data_loop()
     scheduler = BlockingScheduler()
-    scheduler.add_job(average_raw_data, "interval", hours=1)
+    scheduler.add_job(average_raw_data_loop, "interval", hours=1)
     scheduler.start()
+
+main()
