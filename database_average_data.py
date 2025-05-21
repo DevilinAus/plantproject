@@ -11,14 +11,10 @@ def round_down_to_hour(timestamp):
     return timestamp - (timestamp % 3600)
 
 
-# New plan - the average data can never be allowed to run without using the checkpoint,
 # Otherwise you could have new data processed and stored in the DB out of order?
 def average_raw_data_loop(full_run=0):
     start_time = datetime.datetime.now()
     start_time = start_time.timestamp()
-
-    print("No checkpoint found, doing a full run.")
-    # If no checkpoint exists, assume first run and loop average raw data from now to the start.
 
     # get the earliest point in the database.
 
