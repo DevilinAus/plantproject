@@ -1,8 +1,10 @@
+from unittest.mock import patch
 from app.index.home import translate_moisture
 
 
 def describe_translate_moisture():
-    def test_translate_moisture_25():
+    def test_translate_moisture_25(mock_fetch):
+        mock_fetch.return_value = [(200,)]
         returned_result = translate_moisture(25)
         assert "Moisture levels critical." in returned_result
 
