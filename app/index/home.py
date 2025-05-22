@@ -1,12 +1,12 @@
 from flask import render_template
 from . import index_bp
-from db import get_connection, fetch
+import db
 
 
 @index_bp.route("/")
 def show_homepage():
     # Reconnect to the DB
-    connection = get_connection()
+    connection = db.get_connection()
     cursor = connection.cursor()
 
     # Fetch the last 30 entries of moisture data from the database and assign them to a variable
@@ -31,7 +31,7 @@ def show_homepage():
 
 
 def translate_moisture(reading):
-    maximum_value = fetch("avg_data", data_limit=1, select="MAX(moisture_reading)")
+    maximum_value = db.fetch("avg_data", data_limit=1, select="MAX(moisture_reading)")
 
     if isinstance(reading, (int, float)) and isinstance(maximum_value, (int, float)):
         percent_value = int((reading / maximum_value) * 100)
