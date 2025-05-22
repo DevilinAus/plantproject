@@ -87,4 +87,5 @@ def main():
     scheduler.start()
 
 
-main()
+if __name__ == "__main__":
+    main()
