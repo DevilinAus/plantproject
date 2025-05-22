@@ -11,21 +11,15 @@ def round_down_to_hour(timestamp):
     return timestamp - (timestamp % 3600)
 
 
-# Otherwise you could have new data processed and stored in the DB out of order?
 def average_raw_data_loop():
     start_time = datetime.datetime.now()
     start_time = start_time.timestamp()
 
-    # get the earliest point in the database.
-
     oldest_timestamp = db.fetch("raw_data", 1, order="ASC")
     oldest_timestamp = oldest_timestamp[0][0]
-    print(oldest_timestamp)
-    print(type(oldest_timestamp))
     oldest_rounded_down = round_down_to_hour(oldest_timestamp)
 
     while oldest_rounded_down < start_time:
-        print("Starting loop from start of found values")
         average_raw_data(oldest_rounded_down)
         oldest_rounded_down += 3600
 
@@ -33,16 +27,13 @@ def average_raw_data_loop():
 def average_raw_data(timestamp_to_process):
     print("Average Raw Data Processing!")
 
-    # work out what timestamp it was an hour ago(start)
     one_hour_ago = timestamp_to_process - 3600
 
     print(f"Timestamp to process is: {timestamp_to_process}")
     print(f"An hour ago is: {one_hour_ago}")
 
-    # Fetch data
     rows = db.fetch_between("raw_data", timestamp_to_process, one_hour_ago)
 
-    # count how many data points
     reading_count = 0
     total_reading_value = 0
 
@@ -54,10 +45,6 @@ def average_raw_data(timestamp_to_process):
     # reading_count = len(rows)
     # total_reading_value = sum(row[1] for row in rows)
 
-    print(reading_count)
-    print(total_reading_value)
-
-    # add data up & divide by count (get average)
     if reading_count > 0:
         average_reading = round(total_reading_value / reading_count)
     else:
