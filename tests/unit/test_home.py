@@ -4,38 +4,46 @@ from app.index.home import translate_moisture
 
 def describe_translate_moisture():
     def test_translate_moisture_25(mock_fetch):
-        mock_fetch.return_value = [(200,)]
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(25)
         assert "Moisture levels critical." in returned_result
 
-    def test_translate_moisture_75():
+    def test_translate_moisture_75(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(75)
         assert "Moisture levels balanced." in returned_result
 
-    def test_translate_moisture_125():
+    def test_translate_moisture_125(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(125)
         assert "Moisture within acceptable parameters." in returned_result
 
-    def test_translate_moisture_175():
+    def test_translate_moisture_175(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(175)
         assert "Moisture decreasing." in returned_result
 
-    def test_translate_moisture_225():
+    def test_translate_moisture_225(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(225)
         assert "Warning: Dry conditions detected." in returned_result
 
-    def test_translate_moisture_275():
+    def test_translate_moisture_275(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(275)
         assert "Alert: Severe dehydration likely." in returned_result
 
-    def test_translate_moisture_325():
+    def test_translate_moisture_325(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(325)
         assert "CRITICAL STATUS!" in returned_result
 
-    def test_translate_moisture_out_of_bounds():
+    def test_translate_moisture_out_of_bounds(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture(9999)
         assert "Reading outside expected parameters" in returned_result
 
-    def test_translate_moisture_string():
+    def test_translate_moisture_string(mock_fetch):
+        mock_fetch.return_value = [200]
         returned_result = translate_moisture("ABCD")
         assert "Non numberic values provided. Consult administrator" in returned_result
