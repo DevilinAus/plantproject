@@ -174,9 +174,12 @@ cython_debug/
 .pypirc
 
 plant_info.db
+plant_info-test.db
 
 planning/
 
 bin/
 
-function_example.py
+plant_info.db-shm
+plant_info.db-wal
+app.wsgi

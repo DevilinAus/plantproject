@@ -1,12 +1,12 @@
 from flask import render_template
 from . import index_bp
-from db import get_connection
+import db
 
 
 @index_bp.route("/")
 def show_homepage():
     # Reconnect to the DB
-    connection = get_connection()
+    connection = db.get_connection()
     cursor = connection.cursor()
 
     # Fetch the last 30 entries of moisture data from the database and assign them to a variable
@@ -31,20 +31,28 @@ def show_homepage():
 
 
 def translate_moisture(reading):
-    # assume zero to be currently wet.
-    # 500 seems to maximum reading in air, unsure about soil
+    maximum_value = db.fetch("avg_data", data_limit=1, select="MAX(moisture_reading)")
 
-    if reading == 0:
-        translated_moisture_string = f"Can't get any wetter! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
+    if isinstance(reading, (int, float)) and isinstance(maximum_value, (int, float)):
+        percent_value = int((reading / maximum_value) * 100)
+    else:
+        return "Non numberic values provided. Consult administrator"
+
+    # Added subnautica themed warnings, I might want to update these to be an option when app is more complete.
+    # Maybe a few different "themes" for the warnings, that could tie in with the tailwind theme"
+    if reading < 50:
+        return f"Moisture levels critical. <br/> Oversaturation detected - Root suffocation likely. <br/> Reading: {reading} <br/> Wetness Estimation: {percent_value}%"
     elif reading <= 100:
-        translated_moisture_string = f"Soaked! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
+        return f"Moisture levels balanced. <br/> Additional H₂O not recommended. <br/> Reading: {reading} <br/> Wetness Estimation: {percent_value}%"
+    elif reading <= 150:
+        return f"Moisture within acceptable parameters. </br> No action required. <br/> Reading: {reading} <br/> Wetness Estimation: {percent_value}%"
     elif reading <= 200:
-        translated_moisture_string = f"Nice and moist! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
+        return f"Moisture decreasing. <br/> Recommend hydration soon to avoid cellular stress. <br/> Reading: {reading} <br/> Wetness Estimation: {percent_value}%"
+    elif reading <= 250:
+        return f"Warning: Dry conditions detected. </br> Hydration required to prevent plant stress. <br/> Reading: {reading} <br/> Wetness Estimation: {percent_value}%"
     elif reading <= 300:
-        translated_moisture_string = f"Average, if no rain due consider watering! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
-    elif reading <= 400:
-        translated_moisture_string = f"It's time to water! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
-    elif reading <= 400:
-        translated_moisture_string = f"Sahara Desert, they're probably dead. Water immediately! <br/> Reading: {reading} <br/> Wetness Estimation: {(500 - reading) / 5}%"
-
-    return translated_moisture_string
+        return f"Alert: Severe dehydration likely.  </br> Survival chances declining. <br/> Reading: {reading} <br/> Wetness Estimation: {percent_value}%"
+    elif reading > 300 and reading < 500:
+        return f"CRITICAL STATUS! <br/> Substrate moisture insufficient to support biological activity. </br> Initiate emergency hydration protocol. <br/> Reading: {reading} <br/> Wetness Estimation: {percent_value}%"
+    else:
+        return "Reading outside expected parameters. Consult administrator."
