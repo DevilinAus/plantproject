@@ -180,6 +180,10 @@ planning/
 
 bin/
 
+# Database files.
 plant_info.db-shm
 plant_info.db-wal
 app.wsgi
+
+# Environment variables
+.env
