@@ -60,14 +60,14 @@ def describe_translate_moisture():
 
 
 def test_show_homepage(monkeypatch):
-    app = create_app()  # Or however you instantiate your Flask app
+    app = create_app()
     app.testing = True
 
     # Mock the database connection and cursor
     mock_connection = MagicMock()
     mock_cursor = MagicMock()
 
-    # Returns (1,500) whenever fetchone is called on the cursor.
+    # Returns (None (timestamp not needed, and 245)) whenever fetchone is called on the cursor.
     mock_cursor.fetchone.return_value = (None, 245)
     # Returns the mock_cursor obeject whenever .cursor is used on connection.
     mock_connection.cursor.return_value = mock_cursor
