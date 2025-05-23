@@ -5,28 +5,17 @@ import db
 
 @index_bp.route("/")
 def show_homepage():
-    # Reconnect to the DB
     connection = db.get_connection()
     cursor = connection.cursor()
 
-    # Fetch the last 30 entries of moisture data from the database and assign them to a variable
     cursor.execute("SELECT * FROM raw_data ORDER BY date_time DESC LIMIT 1")
     rows = cursor.fetchone()
     raw_moisture_reading = rows[1]
 
-    # Close the connection
     connection.close()
 
     current_moisture = translate_moisture(raw_moisture_reading)
 
-    # print(current_moisture)
-
-    # fake = [{"percent" : 23, "box_colour" : "green"}]
-
-    # Give data to the html
-    # return render_template('index.html', monthly_moisture=monthly_moisture)
-    # return render_template('index.html', monthly_moisture=map(to_model,rows))
-    # print(list(map(to_model,rows)))
     return render_template("index.html", current_moisture=current_moisture)
 
 
