@@ -1,4 +1,6 @@
 from app.index.home import translate_moisture
+from app import create_app
+from unittest.mock import patch, MagicMock
 
 
 def describe_translate_moisture():
@@ -55,3 +57,36 @@ def describe_translate_moisture():
         returned_result = translate_moisture("ABCD")
         assert "Non numberic values provided. Consult administrator" in returned_result
         assert "%" not in returned_result
+
+
+def test_show_homepage(monkeypatch):
+    app = create_app()  # Or however you instantiate your Flask app
+    app.testing = True
+
+    # Mock the database connection and cursor
+    mock_connection = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Returns (1,500) whenever fetchone is called on the cursor.
+    mock_cursor.fetchone.return_value = (None, 245)
+    # Returns the mock_cursor obeject whenever .cursor is used on connection.
+    mock_connection.cursor.return_value = mock_cursor
+
+    # Make a new function that simulates just the rendering of one instance of getting the
+    # error message into the HTML (I've tested mock translate in full above)
+    def mock_translate(reading):
+        return "Moisture decreasing. <br/> Recommend hydration soon to avoid cellular stress."
+
+    # Patch the original translate moisture to be replaced with the mocked function.
+    monkeypatch.setattr("app.index.home.translate_moisture", mock_translate)
+
+    # Replaces the real DB with the fake one for testing
+    with patch("db.get_connection", return_value=mock_connection):
+        # Uses a fake web browser
+        with app.test_client() as client:
+            # Fake visits the homepage.
+            response = client.get("/")
+
+            # Do tests here.
+            assert response.status_code == 200
+            assert b"Moisture decreasing" in response.data
