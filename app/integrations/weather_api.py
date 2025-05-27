@@ -14,12 +14,15 @@ outbound_request = (
 
 forecast = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q=Brisbane&days=3&aqi=no&alerts=no"
 
-response = requests.get(outbound_request)
+# get current time
+
+# check current time against saved info in database
+current_weather = requests.get(outbound_request)
 
 
 def get_weather():
-    if response.status_code == 200:
-        data = response.json()
+    if current_weather.status_code == 200:
+        data = current_weather.json()
         print(data)
     else:
         print(f"Failed to fetch data: {response.status_code}")
