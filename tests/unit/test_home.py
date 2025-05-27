@@ -49,9 +49,8 @@ def describe_translate_moisture():
 
 
 def test_show_homepage(client, mocker):
-    # End of line comments are to make Ruff ignore these "never used" errors.
-    latest_db_reading = mocker.patch("db.fetch_latest", return_value=195)  # noqa: F841
-    maximum_value = mocker.patch("db.fetch", return_value=195)  # noqa: F841
+    mocker.patch("db.fetch_latest", return_value=195)
+    mocker.patch("db.fetch", return_value=195)
 
     # Fake visits the homepage.
     response = client.get("/")
