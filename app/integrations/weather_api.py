@@ -1,35 +1,97 @@
 from dotenv import load_dotenv
 import requests
 import os
+import db
+from flask import Blueprint
+
+weather_api_bp = Blueprint(
+    "weather_api", __name__, url_prefix="/integrations", template_folder="templates"
+)
+
 
 load_dotenv()
 API_KEY = os.getenv("WEATHER_API_KEY")
 CITY = "Brisbane"
 
 # Current weather.
-outbound_request = (
+current_query = (
     f"https://api.weatherapi.com/v1/current.json?key={API_KEY}&q={CITY}&aqi=no"
 )
 
 
-forecast = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q=Brisbane&days=3&aqi=no&alerts=no"
+forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q=Brisbane&days=3&aqi=no&alerts=no"
 
 # get current time
 
 # check current time against saved info in database
-current_weather = requests.get(outbound_request)
+current_weather = requests.get(current_query)
 
 
+@weather_api_bp.route("/get_weather", methods=["GET"])
 def get_weather():
     if current_weather.status_code == 200:
-        data = current_weather.json()
-        print(data)
+        response = current_weather.json()
+        print(response)
     else:
-        print(f"Failed to fetch data: {response.status_code}")
+        print(f"Failed to fetch data: {current_weather.status_code}")
+
+    for key, value in response["current"].items():
+        if key != "condition":
+            db.store_weather(key, value)
 
 
 get_weather()
 
+
+# JSON RESPONSE.
+{
+    "location": {
+        "name": "Brisbane",
+        "region": "Queensland",
+        "country": "Australia",
+        "lat": -27.5,
+        "lon": 153.0167,
+        "tz_id": "Australia/Brisbane",
+        "localtime_epoch": 1748310013,
+        "localtime": "2025-05-27 11:40",
+    },
+    "current": {
+        "last_updated_epoch": 1748309400,
+        "last_updated": "2025-05-27 11:30",
+        "temp_c": 26.1,
+        "temp_f": 79.0,
+        "is_day": 1,
+        "condition": {
+            "text": "Sunny",
+            "icon": "//cdn.weatherapi.com/weather/64x64/day/113.png",
+            "code": 1000,
+        },
+        "wind_mph": 13.4,
+        "wind_kph": 21.6,
+        "wind_degree": 303,
+        "wind_dir": "WNW",
+        "pressure_mb": 1014.0,
+        "pressure_in": 29.94,
+        "precip_mm": 0.0,
+        "precip_in": 0.0,
+        "humidity": 70,
+        "cloud": 25,
+        "feelslike_c": 27.5,
+        "feelslike_f": 81.6,
+        "windchill_c": 23.5,
+        "windchill_f": 74.4,
+        "heatindex_c": 25.3,
+        "heatindex_f": 77.5,
+        "dewpoint_c": 16.3,
+        "dewpoint_f": 61.4,
+        "vis_km": 10.0,
+        "vis_miles": 6.0,
+        "uv": 4.3,
+        "gust_mph": 15.9,
+        "gust_kph": 25.6,
+    },
+}
+# ==============================================
 
 # SAMPLE RETURN DATA:
 

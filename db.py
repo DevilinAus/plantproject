@@ -64,3 +64,16 @@ def store_data(timestamp, average_reading, table):
     print(f"Wrote to DB -- TIMESTAMP: {timestamp} READING: {average_reading}")
     connection.commit()
     connection.close()
+
+
+def store_weather(key, value):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute(
+        """
+        INSERT INTO current_weather (key, value) 
+        VALUES (?, ?)
+        ON CONFLICT(key)
+        DO UPDATE SET value = excluded.value""",
+        (key, value),
+    )

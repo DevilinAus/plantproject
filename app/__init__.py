@@ -51,6 +51,7 @@ def create_app():
     from app.charts.api import api_bp
     from app.stats import stats_bp
     from app.dashboard import dashboard_bp
+    from app.integrations.weather_api import weather_api_bp
 
     app.register_blueprint(index_bp)
     app.register_blueprint(charts_bp)
@@ -59,5 +60,6 @@ def create_app():
     app.register_blueprint(api_bp)
     app.register_blueprint(stats_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(weather_api_bp)
 
     return app
