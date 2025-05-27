@@ -3,6 +3,7 @@ import requests
 import os
 import db
 from flask import Blueprint
+import time
 
 weather_api_bp = Blueprint(
     "weather_api", __name__, url_prefix="/integrations", template_folder="templates"
@@ -21,26 +22,53 @@ current_query = (
 
 forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q=Brisbane&days=3&aqi=no&alerts=no"
 
-# get current time
-
-# check current time against saved info in database
-current_weather = requests.get(current_query)
-
 
 @weather_api_bp.route("/get_weather", methods=["GET"])
 def get_weather():
+    # get current time
+    now = int(time.time())
+
+    # get latest fetch time
+    collected_at = db.fetch_collected_at()
+    response_data = "empty"
+
+    print(now)
+    print(collected_at)
+
+    # check current time against saved info in database
+    if (now - int(collected_at)) > 300:
+        response_data = fetch_external_data(now)
+
+    return response_data
+
+
+def fetch_external_data(now):
+    current_weather = requests.get(current_query)
+
+    print(f"CURRENT_WEATHER = {current_weather}")
+
+    response_data = current_weather.json
+
     if current_weather.status_code == 200:
         response = current_weather.json()
         print(response)
     else:
         print(f"Failed to fetch data: {current_weather.status_code}")
 
+    # For everything that's not in "condition"
     for key, value in response["current"].items():
         if key != "condition":
+            print(f"KEY IS {key} & VALUE IS {value}")
             db.store_weather(key, value)
 
+    for key, value in response["current"]["condition"].items():
+        print(f"KEY IS {key} & VALUE IS {value}")
+        db.store_weather(key, value)
 
-get_weather()
+    # Store fetch time into DB too
+    db.store_weather("fetched_at", now)
+
+    return response_data
 
 
 # JSON RESPONSE.

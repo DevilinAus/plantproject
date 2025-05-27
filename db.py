@@ -69,6 +69,9 @@ def store_data(timestamp, average_reading, table):
 def store_weather(key, value):
     connection = get_connection()
     cursor = connection.cursor()
+
+    print(f" THIS IS IN STORE WEATHER (DB)")
+    print(f"KEY IS {key} VALUE IS {value}")
     cursor.execute(
         """
         INSERT INTO current_weather (key, value) 
@@ -77,3 +80,20 @@ def store_weather(key, value):
         DO UPDATE SET value = excluded.value""",
         (key, value),
     )
+
+    connection.commit()
+    connection.close()
+
+
+def fetch_collected_at():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT value FROM current_weather WHERE key = 'fetched_at'")
+    result = cursor.fetchone()
+
+    connection.close()
+
+    result = result[0]
+
+    return result
