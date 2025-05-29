@@ -97,3 +97,17 @@ def fetch_collected_at():
     result = result[0]
 
     return result
+
+
+def fetch_all(table):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    query = f"SELECT key, value FROM {table};"
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    results = dict(results)
+
+    return results

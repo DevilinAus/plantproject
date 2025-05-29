@@ -22,53 +22,74 @@ current_query = (
 
 forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q=Brisbane&days=3&aqi=no&alerts=no"
 
+# Flow
+
+# Currently
+# if data less than 5 mins old, use data from DB
+# else do an external call and use that instead.
+
+# problem - 2 different data types, causing lots of issues
+
+# New solution
+# if data more than 5 mins old update the DB from external call
+# then provide whatever is in the database to the front end.
+# always same datatype, better structure.
+
 
 @weather_api_bp.route("/get_weather", methods=["GET"])
 def get_weather():
-    # get current time
+    # get current time & last fetch time.
     now = int(time.time())
-
-    # get latest fetch time
     collected_at = db.fetch_collected_at()
-    response_data = "empty"
-
-    print(now)
-    print(collected_at)
 
     # check current time against saved info in database
     if (now - int(collected_at)) > 300:
-        response_data = fetch_external_data(now)
+        fetch_external_data(now)
 
-    return response_data
+    # response_data = "this will be db data"
+
+    db_data = db.fetch_all("current_weather")
+
+    print(db_data)
+
+    # get data from the db and return it.
+    return db_data
 
 
 def fetch_external_data(now):
-    current_weather = requests.get(current_query)
+    # returns the response (it's just a str at this point)
+    response = requests.get(current_query)
 
-    print(f"CURRENT_WEATHER = {current_weather}")
+    # convert it into python dictionary
+    current_weather = response.json()
 
-    response_data = current_weather.json
+    # print(f"CURRENT_WEATHER = {current_weather}")
+    # print(type(current_weather))
 
-    if current_weather.status_code == 200:
-        response = current_weather.json()
-        print(response)
+    # DEBUGGING
+    # return current_weather
+
+    # print(current_weather)
+
+    if response.status_code == 200:
+        pass
     else:
         print(f"Failed to fetch data: {current_weather.status_code}")
 
+    # print(f"DUMPING RESPONSE {response}")
+
     # For everything that's not in "condition"
-    for key, value in response["current"].items():
+    for key, value in current_weather["current"].items():
         if key != "condition":
-            print(f"KEY IS {key} & VALUE IS {value}")
+            # print(f"KEY IS {key} & VALUE IS {value}")
             db.store_weather(key, value)
 
-    for key, value in response["current"]["condition"].items():
-        print(f"KEY IS {key} & VALUE IS {value}")
+    for key, value in current_weather["current"]["condition"].items():
+        # print(f"KEY IS {key} & VALUE IS {value}")
         db.store_weather(key, value)
 
     # Store fetch time into DB too
     db.store_weather("fetched_at", now)
-
-    return response_data
 
 
 # JSON RESPONSE.
