@@ -18,7 +18,7 @@ current_query = (
     f"https://api.weatherapi.com/v1/current.json?key={API_KEY}&q={CITY}&aqi=no"
 )
 
-forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q=Brisbane&days=3&aqi=no&alerts=no"
+forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={CITY}&days=3&aqi=no&alerts=no"
 
 
 @weather_api_bp.route("/get_weather", methods=["GET"])
