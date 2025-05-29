@@ -85,8 +85,6 @@ def store_weather(key, value):
     connection = get_connection()
     cursor = connection.cursor()
 
-    print(f" THIS IS IN STORE WEATHER (DB)")
-    print(f"KEY IS {key} VALUE IS {value}")
     cursor.execute(
         """
         INSERT INTO current_weather (key, value) 
