@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent">
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Enchanted Grove</title>
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Plant Monitoring App</title>
     <style>
     /* RESET FOR OLD SAFARI */
     body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, Helvetica; }
@@ -17,7 +20,7 @@
       position: relative; 
       background-image: linear-gradient(to bottom, #f5f9ee 0%, #e8f0e1 100%);
     }
-    /* HEADER - Mushroom cap inspired */
+    /* HEADER */
     .header { 
       position: absolute; 
       top: 0; 
@@ -37,7 +40,7 @@
       text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
       letter-spacing: 1px;
     }
-    /* SIDEBAR - Tree bark texture */
+    /* SIDEBAR */
     .sidebar { 
       position: absolute; 
       top: 60px; 
@@ -66,7 +69,7 @@
       text-shadow: 0 0 5px rgba(255,215,140,0.5);
       border-left: 3px solid #c8a878;
     }
-    /* MAIN CONTENT - Parchment-like */
+    /* MAIN CONTENT */
     .main { 
       position: absolute; 
       top: 60px; 
@@ -78,7 +81,7 @@
       background: #f5f0e1;
       background-image: radial-gradient(ellipse at center, #fff9e8 0%, #f5f0e1 100%);
     }
-    /* CARDS - Leaf-inspired */
+    /* CARDS */
     .card { 
       background: #fff; 
       border-radius: 8px; 
@@ -234,35 +237,18 @@
           document.getElementById("tomato-status").textContent = data.status;
           document.getElementById("tomato-moist").textContent = data.moisture;
         } else {
-          document.getElementById("status").textContent = "Forest whispers unclear...";
+          document.getElementById("status").textContent = "ERROR";
         }
       };
       xhr.onerror = function () {
-        document.getElementById("status").textContent = "Lost connection to the grove";
+        document.getElementById("status").textContent = "Lost connection...";
       };
       xhr.send();
     }
 
     updateDashboard();               // Initial load
     setInterval(updateDashboard, 5000);  // Repeat every 5 seconds
-    
-    // Simple animation for plant items
-    function animatePlants() {
-      var plants = document.querySelectorAll('.plant-item');
-      for (var i = 0; i < plants.length; i++) {
-        plants[i].style.opacity = '0';
-        plants[i].style.transform = 'translateY(20px)';
-        (function(i) {
-          setTimeout(function() {
-            plants[i].style.transition = 'all 0.5s ease';
-            plants[i].style.opacity = '1';
-            plants[i].style.transform = 'translateY(0)';
-          }, 100 * i);
-        })(i);
-      }
-    }
-    
-    setTimeout(animatePlants, 500);
+  
     </script>
   </body>
 </html>

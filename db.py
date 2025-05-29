@@ -79,3 +79,50 @@ def store_data(timestamp, average_reading, table):
     print(f"Wrote to DB -- TIMESTAMP: {timestamp} READING: {average_reading}")
     connection.commit()
     connection.close()
+
+
+def store_weather(key, value):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    print(f" THIS IS IN STORE WEATHER (DB)")
+    print(f"KEY IS {key} VALUE IS {value}")
+    cursor.execute(
+        """
+        INSERT INTO current_weather (key, value) 
+        VALUES (?, ?)
+        ON CONFLICT(key)
+        DO UPDATE SET value = excluded.value""",
+        (key, value),
+    )
+
+    connection.commit()
+    connection.close()
+
+
+def fetch_collected_at():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT value FROM current_weather WHERE key = 'fetched_at'")
+    result = cursor.fetchone()
+
+    connection.close()
+
+    result = result[0]
+
+    return result
+
+
+def fetch_all(table):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    query = f"SELECT key, value FROM {table};"
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    results = dict(results)
+
+    return results
