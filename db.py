@@ -24,6 +24,21 @@ def fetch(table, data_limit, column="date_time", order="DESC", select="*"):
     return rows
 
 
+def fetch_latest(table, select="*"):
+    query = f"SELECT {select} FROM {table}"
+
+    # Reconnect to the DB
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(query)
+    row = cursor.fetchone()
+    value = row[0]
+
+    connection.close()
+    return value
+
+
 def get_connection():
     connection = sqlite3.connect(DB_PATH)
     connection.execute("PRAGMA journal_mode=WAL;")
