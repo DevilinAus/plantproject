@@ -1,6 +1,7 @@
 # This builds the Flask app and returns it
 
 from flask import Flask
+import os
 from app.db.database import db
 
 
@@ -35,6 +36,7 @@ def request_loader(request):
 
 def create_app():
     app = Flask(__name__)
+
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///plant_info.db"
     # used user management. (sessions / messages etc.) now being created after the app is initalised.
     app.secret_key = secrets.token_hex(32)

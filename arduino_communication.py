@@ -2,8 +2,23 @@ import datetime
 import requests
 import json
 from apscheduler.schedulers.blocking import BlockingScheduler
+from app.db.models import RawData
 from config import ARDUINO_IP
-from db import get_connection
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+# Create standalone version of the engine, so it's not reliant on Flask running.
+engine = create_engine("sqlite:///instance/plant_info.db", future=True)
+
+
+# Copy of the storing function, again so not reliant on the Flask app.
+def store_data_arduino(model_class, timestamp: int, value: int):
+    with Session(engine) as session:
+        new_entry = model_class(timestamp=timestamp, value=value)
+
+        session.add(new_entry)
+        session.commit()
 
 
 def get_sensor_data():
@@ -28,21 +43,10 @@ def get_sensor_data():
 
 
 def main():
-    print("Starting data collection...")
-
     time_collected = int(datetime.datetime.now().timestamp())
-    last_generated = get_sensor_data()
+    last_generated = int(get_sensor_data())
 
-    # TODO - Use External DB Function Here.
-    connection = get_connection()
-    cursor = connection.cursor()
-    cursor.execute(
-        "INSERT INTO raw_data (date_time, moisture_reading) VALUES (?, ?)",
-        (time_collected, last_generated),
-    )
-    print(f"Wrote to DB! \nTIME: {time_collected}\nREADING:{last_generated}\n")
-    connection.commit()
-    connection.close()
+    store_data_arduino(RawData, time_collected, last_generated)
 
 
 scheduler = BlockingScheduler()

@@ -1,5 +1,8 @@
 import sqlite3
+from app.db.models import RawData
 from config import DB_PATH
+from sqlalchemy import select
+from app.db.database import db
 
 
 # could probably make a more robust function since a fair bit is reused here, where you can hand
@@ -22,21 +25,6 @@ def fetch(table, data_limit, column="date_time", order="DESC", select="*"):
     # Close the connection
     connection.close()
     return rows
-
-
-def fetch_latest(table, select="*"):
-    query = f"SELECT {select} FROM {table}"
-
-    # Reconnect to the DB
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(query)
-    row = cursor.fetchone()
-    value = row[0]
-
-    connection.close()
-    return value
 
 
 def get_connection():
@@ -65,7 +53,7 @@ def fetch_between(table, newest_time, oldest_time):
 
 
 # TODO return an OK or Error.
-def store_data(timestamp, average_reading, table):
+def store_data_old(timestamp, average_reading, table):
     # store that data with current date and hour (for label) in cleaned DB.
     connection = get_connection()
     cursor = connection.cursor()
@@ -79,6 +67,14 @@ def store_data(timestamp, average_reading, table):
     print(f"Wrote to DB -- TIMESTAMP: {timestamp} READING: {average_reading}")
     connection.commit()
     connection.close()
+
+
+def store_data(model_class, timestamp: int, value: int):
+    new_entry = model_class(timestamp=timestamp, value=value)
+
+    with db.session() as session:
+        session.add(new_entry)
+        session.commit()
 
 
 def store_weather(key, value):

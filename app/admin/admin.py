@@ -1,6 +1,7 @@
 from dataclasses import asdict
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from app.db.database import db
+import os
 
 
 from flask_login import (
@@ -45,6 +46,8 @@ def user_create():
 def user_list():
     users = db.session.execute(db.select(Person).order_by(Person.username)).scalars()
     print(f"users = {users}")
+    print("Current working directory:", os.getcwd())
+    print("Absolute DB path:", os.path.abspath("/instance/plant_info.db"))
     users_list = [asdict(user) for user in users]
     return jsonify(users_list)
     # return render_template("user/list.html", users=users)
