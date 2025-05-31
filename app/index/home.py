@@ -1,10 +1,7 @@
 from flask import render_template
 from sqlalchemy import func, select
-
 from app.db.models import RawData
 from . import index_bp
-
-
 from app.db.database import db
 
 

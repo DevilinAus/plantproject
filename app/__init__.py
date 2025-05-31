@@ -1,13 +1,7 @@
-# This builds the Flask app and returns it
-
 from flask import Flask
-import os
 from app.db.database import db
-
-
 from flask_login import LoginManager
 import secrets
-
 from app.user import User, users
 
 login_manager = LoginManager()
