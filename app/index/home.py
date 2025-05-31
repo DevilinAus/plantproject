@@ -1,12 +1,18 @@
 from flask import render_template
+from sqlalchemy import func, select
+from app.db.models import RawData
 from . import index_bp
-import db
+from app.db.database import db
 
 
 @index_bp.route("/")
 def show_homepage():
-    latest_db_reading = db.fetch_latest("raw_data", select="moisture_reading")
-    maximum_value = db.fetch("avg_data", data_limit=1, select="MAX(moisture_reading)")
+    latest_query = select(RawData.value).order_by(RawData.id.desc()).limit(1)
+    maximum_query = select(func.max(RawData.value))
+
+    with db.session() as session:
+        latest_db_reading = session.execute(latest_query).scalar_one_or_none()
+        maximum_value = session.execute(maximum_query).scalar_one_or_none()
 
     current_moisture = translate_moisture(latest_db_reading, maximum_value)
 
