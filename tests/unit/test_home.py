@@ -1,8 +1,5 @@
-from flask import app
-from sqlalchemy import func, select
 from app.db.models import RawData
 from app.index.home import translate_moisture
-from app.db.database import db
 
 
 def describe_translate_moisture():
