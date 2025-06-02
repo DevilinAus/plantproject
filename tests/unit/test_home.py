@@ -63,8 +63,6 @@ def test_show_homepage(client, db_session):
 
     response = client.get("/")
 
-    print(response.data)
-
     assert response.status_code == 200
     assert b"Moisture levels critical" in response.data
     assert b"33" in response.data

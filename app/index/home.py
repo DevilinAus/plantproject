@@ -14,13 +14,6 @@ def show_homepage():
         latest_db_reading = session.execute(latest_query).scalar_one_or_none()
         maximum_value = session.execute(maximum_query).scalar_one_or_none()
 
-    # with db.session() as session:
-    #     all_rows = session.execute(select(RawData)).scalars().all()
-    #     print("All rows in DB:", all_rows)
-
-    # print(latest_db_reading)
-    # print("DB URL:", str(db.session.get_bind().engine.url))
-
     current_moisture = translate_moisture(latest_db_reading, maximum_value)
 
     return render_template("index.html", current_moisture=current_moisture)

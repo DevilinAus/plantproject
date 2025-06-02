@@ -33,10 +33,6 @@ def create_app(test_config=None):
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///plant_info.db"
 
-    # Override with test config if provided
-    if test_config:
-        app.config.update(test_config)
-
     # used user management. (sessions / messages etc.) now being created after the app is initalised.
     app.secret_key = secrets.token_hex(32)
     # TODO - figure out how to make this not refresh on every launch

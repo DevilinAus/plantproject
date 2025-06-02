@@ -3,7 +3,7 @@ from app import create_app
 from app.db.database import db
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def app():
     app = create_app(
         {
@@ -12,13 +12,16 @@ def app():
         }
     )
 
-    ctx = app.app_context()
-    ctx.push()
+    # Activate app context for the entire test duration
+    with app.app_context():
+        # Initialize fresh database
+        db.create_all()
 
-    db.create_all()
-    yield app
-    db.drop_all()
-    ctx.pop()
+        # Make app available for tests
+        yield app
+
+        # Cleanup
+        db.drop_all()
 
 
 @pytest.fixture
