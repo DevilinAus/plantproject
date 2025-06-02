@@ -10,8 +10,16 @@ def show_homepage():
     latest_query = select(RawData.value).order_by(RawData.id.desc()).limit(1)
     maximum_query = select(func.max(RawData.value))
 
-    latest_db_reading = db.session.execute(latest_query).scalar_one_or_none()
-    maximum_value = db.session.execute(maximum_query).scalar_one_or_none()
+    with db.session() as session:
+        latest_db_reading = session.execute(latest_query).scalar_one_or_none()
+        maximum_value = session.execute(maximum_query).scalar_one_or_none()
+
+    # with db.session() as session:
+    #     all_rows = session.execute(select(RawData)).scalars().all()
+    #     print("All rows in DB:", all_rows)
+
+    # print(latest_db_reading)
+    # print("DB URL:", str(db.session.get_bind().engine.url))
 
     current_moisture = translate_moisture(latest_db_reading, maximum_value)
 
