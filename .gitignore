@@ -187,3 +187,5 @@ app.wsgi
 
 # Environment variables
 .env
+
+instance/
