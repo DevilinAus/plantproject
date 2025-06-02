@@ -1,10 +1,7 @@
-import sqlite3
 import datetime
-from datetime import timedelta
 from apscheduler.schedulers.blocking import BlockingScheduler
 import db
 from db import get_connection
-from config import DB_PATH
 
 
 def round_down_to_hour(timestamp):

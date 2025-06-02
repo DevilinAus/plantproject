@@ -18,7 +18,7 @@ def show_charts():
     cursor = connection.cursor()
 
     # Fetch the last 30 entries of moisture data from the database and assign them to a variable
-    cursor.execute("SELECT * FROM raw_data ORDER BY date_time DESC LIMIT 1440")
+    cursor.execute("SELECT * FROM raw_data ORDER BY timestamp DESC LIMIT 1440")
     # rows = cursor.fetchall()
 
     # Close the connection

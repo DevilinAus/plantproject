@@ -24,21 +24,6 @@ def fetch(table, data_limit, column="date_time", order="DESC", select="*"):
     return rows
 
 
-def fetch_latest(table, select="*"):
-    query = f"SELECT {select} FROM {table}"
-
-    # Reconnect to the DB
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(query)
-    row = cursor.fetchone()
-    value = row[0]
-
-    connection.close()
-    return value
-
-
 def get_connection():
     connection = sqlite3.connect(DB_PATH)
     connection.execute("PRAGMA journal_mode=WAL;")
@@ -62,23 +47,6 @@ def fetch_between(table, newest_time, oldest_time):
 
     connection.close()
     return rows
-
-
-# TODO return an OK or Error.
-def store_data(timestamp, average_reading, table):
-    # store that data with current date and hour (for label) in cleaned DB.
-    connection = get_connection()
-    cursor = connection.cursor()
-    cursor.execute(
-        """INSERT INTO avg_data (date_time, moisture_reading) 
-                    VALUES (?, ?)
-                    ON CONFLICT(date_time)
-                    DO UPDATE SET moisture_reading = excluded.moisture_reading""",
-        (timestamp, average_reading),
-    )
-    print(f"Wrote to DB -- TIMESTAMP: {timestamp} READING: {average_reading}")
-    connection.commit()
-    connection.close()
 
 
 def store_weather(key, value):

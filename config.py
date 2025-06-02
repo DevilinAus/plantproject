@@ -8,6 +8,6 @@ BASE_DIR = Path(__file__).resolve().parent
 
 if "pytest" in sys.modules:
     # Using bad path on purpose to ensure not using real DB.
-    DB_PATH = BASE_DIR / "plant_info-test.db"
+    DB_PATH = BASE_DIR / "instance/plant_info-test.db"
 else:
-    DB_PATH = BASE_DIR / "plant_info.db"
+    DB_PATH = BASE_DIR / "instance/plant_info.db"
