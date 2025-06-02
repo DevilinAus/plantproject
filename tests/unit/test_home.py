@@ -1,4 +1,8 @@
+from flask import app
+from sqlalchemy import func, select
+from app.db.models import RawData
 from app.index.home import translate_moisture
+from app.db.database import db
 
 
 def describe_translate_moisture():
@@ -48,13 +52,33 @@ def describe_translate_moisture():
         assert "%" not in returned_result
 
 
-def disabled_test_show_homepage(client, mocker):
-    # TODO NEEDS TO BE REWRITTEN TO WORK WITH THE ORM.
-    # mocker.patch("db.fetch_latest", return_value=195)
-    # mocker.patch("db.fetch", return_value=195)
+def test_show_homepage(client, db_session):
+    row = RawData(timestamp=5000, value=50)
+    db_session.add(row)
+
+    row = RawData(timestamp=10000, value=100)
+    db_session.add(row)
+
+    db_session.commit()
+
+    # DEBUGGING
+    rows = db_session.query(RawData).all()
+    for row in rows:
+        print(f"timestamp={row.timestamp}, value={row.value}")
+
+    # check what the queries return
+    latest_value = db_session.execute(
+        select(RawData.value).order_by(RawData.id.desc()).limit(1)
+    ).scalar_one_or_none()
+
+    max_value = db_session.execute(select(func.max(RawData.value))).scalar_one_or_none()
+
+    print(f"DEBUG: latest_value={type(latest_value)}, max_value={type(max_value)}")
 
     response = client.get("/")
 
+    # print(response.data)
+
     assert response.status_code == 200
     assert b"Moisture decreasing" in response.data
-    assert b"195" in response.data
+    # assert b"195" in response.data
