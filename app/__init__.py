@@ -28,10 +28,11 @@ def request_loader(request):
     return user
 
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///plant_info.db"
+
     # used user management. (sessions / messages etc.) now being created after the app is initalised.
     app.secret_key = secrets.token_hex(32)
     # TODO - figure out how to make this not refresh on every launch

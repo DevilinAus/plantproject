@@ -1,33 +1,44 @@
 import pytest
 from app import create_app
+from app.db.database import db
 
 
 @pytest.fixture()
 def app():
-    app = create_app()
-    app.config.update(
+    app = create_app(
         {
             "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
         }
     )
 
-    # other setup can go here
+    # Activate app context for the entire test duration
+    with app.app_context():
+        # Initialize fresh database
+        db.create_all()
 
-    yield app
+        # Make app available for tests
+        yield app
 
-    # clean up / reset resources here
+        # Cleanup
+        db.drop_all()
 
 
-@pytest.fixture()
+@pytest.fixture
 def client(app):
     return app.test_client()
 
 
-@pytest.fixture()
+@pytest.fixture
 def runner(app):
     return app.test_cli_runner()
 
 
-# @pytest.fixture()
-# def secret():
-#     return "xyzpassword"
+@pytest.fixture
+def db_session():
+    db.session.begin_nested()  # Start savepoint for rollback
+
+    yield db.session
+
+    db.session.rollback()  # Rollback to savepoint
+    db.session.close()

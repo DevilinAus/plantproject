@@ -1,3 +1,4 @@
+from app.db.models import RawData
 from app.index.home import translate_moisture
 
 
@@ -48,13 +49,17 @@ def describe_translate_moisture():
         assert "%" not in returned_result
 
 
-def disabled_test_show_homepage(client, mocker):
-    # TODO NEEDS TO BE REWRITTEN TO WORK WITH THE ORM.
-    # mocker.patch("db.fetch_latest", return_value=195)
-    # mocker.patch("db.fetch", return_value=195)
+def test_show_homepage(client, db_session):
+    row = RawData(timestamp=5000, value=66)
+    db_session.add(row)
+
+    row = RawData(timestamp=10000, value=33)
+    db_session.add(row)
+
+    db_session.commit()
 
     response = client.get("/")
 
     assert response.status_code == 200
-    assert b"Moisture decreasing" in response.data
-    assert b"195" in response.data
+    assert b"Moisture levels critical" in response.data
+    assert b"33" in response.data
