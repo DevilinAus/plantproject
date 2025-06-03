@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="forest">
+<html lang="en" data-theme="garden">
   <head>
     <title>🍅 Tomato App</title> {# TODO CONVERT THIS TO DYNAMIC CONTENT#}
     <meta name="description" content="The best plant watering app ever!">
@@ -12,16 +12,26 @@
           rel="stylesheet"
           type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+          rel="stylesheet">
     {# <link rel="stylesheet"
        href="{{ url_for('static', filename='css/main.css') }}"> #}
     {% block head %}
     {% endblock head %}
   </head>
+  <style>
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  }
+  </style>
   <body class="flex flex-col min-h-screen">
-    <div class="navbar bg-base-100 shadow-sm mb-10">
+    <div class="navbar bg-base-100 shadow-sm">
       <div class="flex-none">
         {# Dropdown Code #}
         <details class="dropdown">
@@ -48,7 +58,29 @@
       </div>
       <div class="flex-1">
         <a href="{{ url_for('index.show_homepage') }}"
-           class="btn btn-ghost text-xl">🍅 Tomato App</a>
+           class="btn btn-ghost text-xl">Plant Monitor</a>
+      </div>
+      <div class="flex items-center justify-start space-x-4 px-4">
+        <img src="{{ url_for('static', filename='images/light-mode.png') }}"
+             alt="Dark Mode Icon"
+             height="24"
+             width="24" />
+        <label class="relative inline-block w-12 h-7">
+          <!-- Hidden checkbox -->
+          <input type="checkbox"
+                 class="sr-only peer"
+                 data-toggle-theme="garden,forest"
+                 data-act-class="ACTIVECLASS" />
+          <!-- Background track -->
+          <div class="w-full h-full bg-gray-300 rounded-full peer-checked:bg-gray-700 transition-colors"></div>
+          <!-- Slider knob -->
+          <div class="absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5">
+          </div>
+        </label>
+        <img src="{{ url_for('static', filename='images/dark-mode.png') }}"
+             alt="Dark Mode Icon"
+             height="24"
+             width="24" />
       </div>
       <div class="flex-none">
         {% if current_user.is_authenticated %}
@@ -66,12 +98,7 @@
       {% if messages %}
         {% for category, message in messages %}
           {% if category == 'error' %}
-            <div class="w-1/2 bg-red-500 text-white mx-auto p-4 rounded-lg mb-4">
-              {{ message }}
-              <button type="button"
-                      class="ml-4 text-white"
-                      onclick="this.parentElement.style.display='none'">×</button>
-            </div>
+            <div class="w-1/2 bg-red-500 text-white mx-auto p-4 rounded-lg mb-4">{{ message }}</div>
           {% else %}
             <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
               {{ message }}
@@ -90,12 +117,14 @@
         <p class="text-sm">© 2025 Tomato Tracker. All rights reserved.</p>
         <div class="flex space-x-4 mt-4 md:mt-0">
           <a href="#" class="text-sm hover:underline">About</a>
-          <a href="#" class="text-sm hover:underline">GitHub</a>
+          <a href="https://github.com/DevilinAus/plantproject"
+             class="text-sm hover:underline">GitHub</a>
           <a href="#" class="text-sm hover:underline">Contact</a>
         </div>
       </div>
     </footer>
     {% block scripts %}
+      <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     {% endblock scripts %}
   </body>
 </html>
