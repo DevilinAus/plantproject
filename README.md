@@ -16,17 +16,28 @@ A full-stack IoT plant monitoring system combining Arduino hardware with a Pytho
 - Flask backend using SQLAlchemy ORM for database management
 - User login system with Flask-Login for authentication and security
 - Interactive charts powered by Chart.js visualizing sensor trends
-- Weather API integration (key stored in `.env`) for environmental context
+- Weather API integration for environmental context
 
 ---
+
+## Usage
+
+- Access the Flask app via browser to view live plant data visualized in charts
+- Login functionality restricts sensitive data and allows user-specific settings
+- Arduino device continuously monitors plants and sends data over WiFi
 
 ## Getting Started
 
 ### Arduino Setup
 
-1. Configure your WiFi network credentials in `SECRETS.H`.
+1. Configure your WiFi network credentials in `arduino_secrets.h`.
 2. Upload the Arduino sketch to your Arduino R4 Uno board.
 3. The Arduino hosts a WiFi web server and sends sensor data over HTTP.
+
+### Arduino API Endpoints
+
+- `/sensor` — Returns sensor data JSON (e.g., `{ "sensor": 212}`)
+- `/info` — Returns WiFi strength and free memory info JSON (e.g., `{ "wifiStrength": "-53", "freeRam": 15600 }`)
 
 ### Flask Backend Setup
 
@@ -49,31 +60,3 @@ flask run
 ```
 
 4. Deploy the app to a WSGI webserver
-
----
-
-## API Endpoints
-
-- `/sensor` — Returns sensor data JSON (e.g., `{ "sensor": 212}`)
-- `/info` — Returns WiFi strength and free memory info JSON (e.g., `{ "wifiStrength": "-53", "freeRam": 15600 }`)
-
----
-
-## Technologies Used
-
-- **Arduino R4 Uno** with manual HTTP response handling over WiFi
-- **Flask** web framework for backend
-- **SQLAlchemy** ORM for database modeling and interactions
-- **Flask-Login** for secure user authentication
-- **Chart.js** for dynamic frontend data visualization
-- Integration with a **weather API** ([weatherapi.com](https://www.weatherapi.com/)) for enhanced environmental data
-
----
-
-## Usage
-
-- Access the Flask app via browser to view live plant data visualized in charts
-- Login functionality restricts sensitive data and allows user-specific settings
-- Arduino device continuously monitors plants and sends data over WiFi
-
----
