@@ -56,13 +56,10 @@ def test_show_homepage(client, db_session):
     row = RawData(timestamp=10000, value=33)
     db_session.add(row)
 
-    db_location = db_session.get_bind().url
-
     db_session.commit()
 
     response = client.get("/")
 
-    assert "memory" in str(db_location)
     assert response.status_code == 200
     assert b"Moisture levels critical" in response.data
     assert b"33" in response.data

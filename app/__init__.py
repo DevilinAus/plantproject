@@ -31,7 +31,7 @@ def request_loader(request):
 def create_app(test_config=None):
     app = Flask(__name__)
 
-    if test_config is not None:
+    if test_config:
         app.config.update(test_config)
     else:
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///plant_info.db"
