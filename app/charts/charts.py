@@ -1,5 +1,5 @@
 from flask import render_template
-from db import get_connection
+from app.db.database import db
 
 from . import charts_bp
 
@@ -13,15 +13,7 @@ data = [
 
 @charts_bp.route("/charts")
 def show_charts():
-    # Reconnect to the DB
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    # Fetch the last 30 entries of moisture data from the database and assign them to a variable
-    cursor.execute("SELECT * FROM raw_data ORDER BY timestamp DESC LIMIT 1440")
-    # rows = cursor.fetchall()
-
-    # Close the connection
-    connection.close()
+    # with db.session as session:
+    #     pass
 
     return render_template("charts.html", data=data)

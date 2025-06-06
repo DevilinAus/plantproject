@@ -3,6 +3,7 @@ from app.db.database import db
 from flask_login import LoginManager
 import secrets
 from app.user import User, users
+from flask_migrate import Migrate
 
 login_manager = LoginManager()
 
@@ -42,6 +43,8 @@ def create_app(test_config=None):
 
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
+
+    migrate = Migrate(app, db)
 
     db.init_app(app)
 
