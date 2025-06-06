@@ -26,7 +26,10 @@ def prepare_data(timeframe):
     start_time = round_down_to_hour(now)
     end_time = start_time - (hours_to_fetch * 3600)
 
+    # REBUILD THIS LOGIC FOR ORM
     rows = db.fetch_between("avg_data", start_time, end_time)
+
+    # END REBUILD ====
 
     response_data = []
 
