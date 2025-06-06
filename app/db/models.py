@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from app.db.database import db
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -19,10 +20,9 @@ class RawData(db.Model):
 
 @dataclass
 class AvgData(db.Model):
-    __tablename__ = "avg_data"
     id: Mapped[int] = mapped_column(primary_key=True)
-    timestamp: Mapped[int] = mapped_column("date_time", unique=True)
-    value: Mapped[int] = mapped_column("moisture_reading")
+    timestamp: Mapped[int] = mapped_column(unique=True)
+    value: Mapped[Optional[int]] = mapped_column()
 
 
 @dataclass
