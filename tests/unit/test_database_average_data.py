@@ -15,21 +15,22 @@ def describe_average_raw_data():
         func.assert_any_call(4, 4)
         # func.assert_not_called()
 
-    def disabled_test_2():
-        # TODO Needs to be rewritten to work with new ORM.
-        mock_cursor = Mock()
 
-        def get_mock_cursor():
-            return mock_cursor
+def disabled_test_2():
+    # TODO Needs to be rewritten to work with new ORM.
+    mock_cursor = Mock()
 
-        connection = Mock()
-        connection.cursor = get_mock_cursor
+    def get_mock_cursor():
+        return mock_cursor
 
-        # connection.close()
+    connection = Mock()
+    connection.cursor = get_mock_cursor
 
-        # Do some stuff with connection
-        write_to_db(1, 2, connection)
+    # connection.close()
 
-        connection.close.assert_called()
-        connection.commit.assert_called()
-        mock_cursor.execute.assert_any_call(ANY, (1, 2))
+    # Do some stuff with connection
+    write_to_db(1, 2, connection)
+
+    connection.close.assert_called()
+    connection.commit.assert_called()
+    mock_cursor.execute.assert_any_call(ANY, (1, 2))
