@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .prepare_data import prepare_data, prepare_dashboard_info
+from .get_chart_data import get_chart_data, prepare_dashboard_info
 
 api_bp = Blueprint("api", __name__, url_prefix="/api", template_folder="templates")
 
@@ -13,7 +13,7 @@ def get_readings():
     print("Received timeframe:", timeframe)
 
     print("sending data to client")
-    return prepare_data(timeframe)
+    return get_chart_data(timeframe)
 
 
 @api_bp.route("/dashboard", methods=["GET"])

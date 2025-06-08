@@ -19,14 +19,17 @@ def construct_datapoint(label, value):
     return {"x": label, "y": value}
 
 
-def prepare_data(timeframe):
+def get_chart_data(timeframe):
     hours_to_fetch = get_max_data_points(timeframe)
 
     now = int(time.time())
     start_time = round_down_to_hour(now)
     end_time = start_time - (hours_to_fetch * 3600)
 
+    # REBUILD THIS LOGIC FOR ORM
     rows = db.fetch_between("avg_data", start_time, end_time)
+
+    # END REBUILD ====
 
     response_data = []
 
