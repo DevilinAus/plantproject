@@ -1,6 +1,6 @@
 from flask import render_template
 from app.db.database import db
-from get_chart_data import get_chart_data
+from app.charts.get_chart_data import get_chart_data
 
 from . import charts_bp
 
