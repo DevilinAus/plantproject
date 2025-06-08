@@ -199,8 +199,10 @@ instance/
 
 # Arduino files
 /arduino/src/arduino_secrets.h
+arduino/src/arduino_secrets
 /arduino/test
 /arduino/.vscode
 
 
 generate_test_data.py
+

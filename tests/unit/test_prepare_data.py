@@ -1,5 +1,5 @@
 import pytest
-from app.charts.prepare_data import get_max_data_points
+from app.charts.get_chart_data import get_max_data_points
 
 
 def describe_get_max_data_points():

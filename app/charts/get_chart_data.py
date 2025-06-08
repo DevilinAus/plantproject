@@ -19,7 +19,7 @@ def construct_datapoint(label, value):
     return {"x": label, "y": value}
 
 
-def prepare_data(timeframe):
+def get_chart_data(timeframe):
     hours_to_fetch = get_max_data_points(timeframe)
 
     now = int(time.time())

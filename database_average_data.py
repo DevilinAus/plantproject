@@ -5,9 +5,11 @@ from app.db.models import AvgData, RawData
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
+ONE_HOUR = 3600
+
 
 def round_down_to_hour(timestamp):
-    return timestamp - (timestamp % 3600)
+    return timestamp - (timestamp % ONE_HOUR)
 
 
 # Create standalone version of the engine, so it's not reliant on Flask running.
@@ -27,14 +29,14 @@ def average_raw_data_loop():
         oldest_hour_floor = None
         print("No Data in DB yet, entering waiting mode...")
 
-    if oldest_hour_floor is not None:
+    if oldest_hour_floor:
         while oldest_hour_floor < start_time:
             average_raw_data(oldest_hour_floor)
-            oldest_hour_floor += 3600
+            oldest_hour_floor += ONE_HOUR
 
 
 def average_raw_data(timestamp_to_process):
-    one_hour_ago = timestamp_to_process - 3600
+    one_hour_ago = timestamp_to_process - ONE_HOUR
 
     print(f"Timestamp to process is: {timestamp_to_process}")
     print(f"An hour ago is: {one_hour_ago}")

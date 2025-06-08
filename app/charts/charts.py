@@ -1,5 +1,6 @@
 from flask import render_template
 from app.db.database import db
+from get_chart_data import get_chart_data
 
 from . import charts_bp
 
@@ -13,7 +14,6 @@ data = [
 
 @charts_bp.route("/charts")
 def show_charts():
-    # with db.session as session:
-    #     pass
+    # data = get_chart_data("1m")
 
     return render_template("charts.html", data=data)

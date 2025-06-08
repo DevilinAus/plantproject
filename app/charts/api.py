@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .prepare_data import prepare_data, prepare_dashboard_info
+from .get_chart_data import prepare_data, prepare_dashboard_info
 
 api_bp = Blueprint("api", __name__, url_prefix="/api", template_folder="templates")
 
