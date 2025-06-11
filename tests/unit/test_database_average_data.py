@@ -1,9 +1,38 @@
 from unittest.mock import Mock, ANY
 
-from database_average_data import write_to_db
+from app import create_app
+from sqlalchemy import select
+
+from database_average_data import (
+    round_down_to_hour,
+    Session,
+    create_engine,
+    AvgData,
+    RawData,
+)
 
 
 def describe_average_raw_data():
+    def test_round_down_to_hour():
+        returned_ts = round_down_to_hour(1754913805)
+        assert returned_ts == 1754913600
+
+    def test_start_time():
+        pass
+
+    def test_oldest_query(seed_database):
+        engine, Session = seed_database
+
+        with Session() as session:
+            oldest_timestamp = session.execute(
+                select(RawData.timestamp).order_by(RawData.timestamp.asc()).limit(1)
+            ).scalar_one()
+            assert oldest_timestamp == 1686495605
+
+    # average_raw_data_loop
+    # patch start_time & oldest query.
+    # seed test data into the in-memory database.
+
     def test_simple_mock(mocker):
         func = Mock()
 

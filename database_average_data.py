@@ -1,11 +1,31 @@
 import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
-from app.db.models import AvgData, RawData
-
+from dataclasses import dataclass
 from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import declarative_base, Mapped, mapped_column, Session
+from typing import Optional
+
+Base = declarative_base()
 
 ONE_HOUR = 3600
+
+
+# Defining the database models outside of the context of Flask.
+# Decoupling ensures this script can run standalone without the webserver files.
+@dataclass
+class RawData(Base):
+    __tablename__ = "raw_data"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    timestamp: Mapped[int] = mapped_column(unique=True)
+    value: Mapped[int]
+
+
+@dataclass
+class AvgData(Base):
+    __tablename__ = "avg_data"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    timestamp: Mapped[int] = mapped_column(unique=True)
+    value: Mapped[Optional[int]] = mapped_column()
 
 
 def round_down_to_hour(timestamp):
