@@ -1,6 +1,6 @@
 import pytest
 from app import create_app
-from app.db.database import db
+from models.database import SessionLocal
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 

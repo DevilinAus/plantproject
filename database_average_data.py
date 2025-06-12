@@ -10,8 +10,10 @@ Base = declarative_base()
 ONE_HOUR = 3600
 
 
-# Defining the database models outside of the context of Flask.
 # Decoupling ensures this script can run standalone without the webserver files.
+# Importing models.py imports a
+
+
 @dataclass
 class RawData(Base):
     __tablename__ = "raw_data"
