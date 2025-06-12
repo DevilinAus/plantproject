@@ -1,8 +1,8 @@
 from flask import render_template
 from sqlalchemy import func, select
-from app.db.models import RawData
+from models.models import RawData
 from . import index_bp
-from app.db.database import db
+from models.database import SessionLocal
 
 
 @index_bp.route("/")
@@ -10,7 +10,7 @@ def show_homepage():
     latest_query = select(RawData.value).order_by(RawData.id.desc()).limit(1)
     maximum_query = select(func.max(RawData.value))
 
-    with db.session() as session:
+    with SessionLocal() as session:
         latest_db_reading = session.execute(latest_query).scalar_one_or_none()
         maximum_value = session.execute(maximum_query).scalar_one_or_none()
 
