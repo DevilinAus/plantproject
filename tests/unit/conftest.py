@@ -1,8 +1,9 @@
 import pytest
 from app import create_app
-from models.database import SessionLocal
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from app.db.flask_db import db
+from scripts.db.vanilla_db import SessionLocal
 
 
 @pytest.fixture()
@@ -86,10 +87,11 @@ def seed_database(decoupled_session):
         (1686513888, 0),
     ]
 
-    with Session() as session:
-        for timestamp, value in seed_data:
-            session.add(RawData(timestamp=timestamp, value=value))
-            session.commit()
+    session = SessionLocal()
+
+    for timestamp, value in seed_data:
+        session.add(RawData(timestamp=timestamp, value=value))
+        session.commit()
 
     return engine, Session
 

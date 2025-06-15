@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from dataclasses import dataclass
 from typing import Optional
-from models.base import Base
+from models import Base
 
 
 @dataclass

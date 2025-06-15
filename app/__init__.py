@@ -1,9 +1,8 @@
 from flask import Flask
-from models.models import Person, RawData, AvgData, MoistureReading
-import models.database as database
 from flask_login import LoginManager
 import secrets
 from app.user import User, users
+from app.db.flask_db import db
 
 login_manager = LoginManager()
 
@@ -42,12 +41,10 @@ def create_app(test_config=None):
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
 
-    # Set up SQLAlchemy engine and sessionmaker
-    database.init_db(app.config["SQLALCHEMY_DATABASE_URI"])
+    db.init_app(app)
 
-    # Create tables using vanilla SQLAlchemy
     with app.app_context():
-        database.Base.metadata.create_all(bind=database.engine)
+        db.create_all()
 
     # Register Blueprints
     from app.index import index_bp
