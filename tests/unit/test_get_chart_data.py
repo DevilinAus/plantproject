@@ -18,6 +18,3 @@ def describe_get_max_data_points():
     def test_fails_without_argument():
         with pytest.raises(Exception):
             get_max_data_points()
-
-    # def test_secret_example(secret):
-    #     assert secret == "xyzpassword"
