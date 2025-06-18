@@ -3,7 +3,7 @@ from app import create_app
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.db.flask_db import db
-from scripts.db.vanilla_db import SessionLocal
+from scripts.db.vanilla_db import SessionLocal, override_database_for_testing
 
 
 @pytest.fixture()
@@ -25,6 +25,11 @@ def app():
 
         # Cleanup
         db.drop_all()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_db():
+    override_database_for_testing("sqlite:///:memory:")
 
 
 @pytest.fixture
