@@ -13,3 +13,7 @@ def override_database_for_testing(url: str):
     engine = create_engine(url, echo=False)
     SessionLocal = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
+
+
+def get_engine_and_session():
+    return engine, SessionLocal

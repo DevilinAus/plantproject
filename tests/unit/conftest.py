@@ -103,6 +103,6 @@ def seed_database(decoupled_session):
 
 @pytest.fixture
 def decoupled_session():
-    engine = create_engine("sqlite:///:memory:", future=True)
-    Session = sessionmaker(bind=engine, future=True)
-    return engine, Session
+    from scripts.db.vanilla_db import get_engine_and_session
+
+    return get_engine_and_session()
