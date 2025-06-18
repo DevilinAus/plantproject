@@ -1,9 +1,7 @@
 import pytest
 from app import create_app
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from app.db.flask_db import db
-from scripts.db.vanilla_db import SessionLocal, override_database_for_testing
+from scripts.db.vanilla_db import get_engine_and_session
 
 
 @pytest.fixture()
@@ -27,11 +25,6 @@ def app():
         db.drop_all()
 
 
-@pytest.fixture(scope="session", autouse=True)
-def setup_test_db():
-    override_database_for_testing("sqlite:///:memory:")
-
-
 @pytest.fixture
 def client(app):
     return app.test_client()
@@ -52,57 +45,17 @@ def db_session():
     db.session.close()
 
 
+DATABASE_URI = "sqlite:///:memory:"
+
+
 @pytest.fixture
-def seed_database(decoupled_session):
-    from database_average_data import Base, RawData
-
-    engine, Session = decoupled_session
-    Base.metadata.create_all(engine)
-
-    seed_data = [
-        # Hour 1 (3 timestamps)
-        (1686495605, 0),
-        (1686495623, 0),
-        (1686495734, 0),
-        # Hour 2 (4 timestamps)
-        (1686499202, 0),
-        (1686499322, 0),
-        (1686499387, 0),
-        (1686499455, 0),
-        # Hour 3 (0 timestamps, for testing Null)
-        # Hour 4 (6 timestamps)
-        (1686506401, 0),
-        (1686506456, 0),
-        (1686506550, 0),
-        (1686506599, 0),
-        (1686506690, 0),
-        (1686506733, 0),
-        # Hour 5 (3 timestamps)
-        (1686510004, 0),
-        (1686510075, 0),
-        (1686510099, 0),
-        # Hour 6 (8 timestamps)
-        (1686513600, 0),
-        (1686513632, 0),
-        (1686513701, 0),
-        (1686513750, 0),
-        (1686513799, 0),
-        (1686513822, 0),
-        (1686513850, 0),
-        (1686513888, 0),
-    ]
-
+def raw_session():
+    engine, SessionLocal = get_engine_and_session(DATABASE_URI)
     session = SessionLocal()
 
-    for timestamp, value in seed_data:
-        session.add(RawData(timestamp=timestamp, value=value))
-        session.commit()
+    session.begin_nested()
 
-    return engine, Session
+    yield session
 
-
-@pytest.fixture
-def decoupled_session():
-    from scripts.db.vanilla_db import get_engine_and_session
-
-    return get_engine_and_session()
+    session.rollback()
+    session.close()

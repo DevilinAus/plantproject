@@ -4,16 +4,9 @@ from models import Base
 
 DATABASE_URL = "sqlite:///plant_info.db"
 
-engine = create_engine(DATABASE_URL, echo=False)
-SessionLocal = sessionmaker(bind=engine)
 
-
-def override_database_for_testing(url: str):
-    global engine, SessionLocal
-    engine = create_engine(url, echo=False)
+def get_engine_and_session(database_url=DATABASE_URL):
+    engine = create_engine(database_url, echo=False)
     SessionLocal = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
-
-
-def get_engine_and_session():
     return engine, SessionLocal

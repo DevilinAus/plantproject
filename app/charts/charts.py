@@ -1,5 +1,4 @@
 from flask import render_template
-from models.database import SessionLocal
 from app.charts.get_chart_data import get_chart_data
 
 from . import charts_bp
