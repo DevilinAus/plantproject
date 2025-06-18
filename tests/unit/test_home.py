@@ -1,4 +1,4 @@
-from app.db.models import RawData
+from models.models import RawData
 from app.index.home import translate_moisture
 
 

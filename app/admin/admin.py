@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from flask import Flask, jsonify, redirect, render_template, request, url_for
-from app.db.database import db
+from app.db.flask_db import db
 import os
 
 
@@ -12,7 +12,7 @@ from flask_login import (
     current_user,
 )
 
-from app.db.models import Person
+from models.models import Person
 
 
 from . import admin_bp
@@ -33,6 +33,7 @@ def user_create():
             # username=request.form["username"],
             # email=request.form["email"],
         )
+
         db.session.add(user)
         db.session.commit()
         return redirect(url_for("user_detail", id=user.id))

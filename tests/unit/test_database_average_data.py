@@ -1,4 +1,7 @@
 from unittest.mock import Mock, ANY
+from app.db.flask_db import db
+from scripts.db.vanilla_db import SessionLocal
+
 
 from app import create_app
 from sqlalchemy import select
@@ -22,12 +25,12 @@ def describe_average_raw_data():
 
     def test_oldest_query(seed_database):
         engine, Session = seed_database
+        session = SessionLocal()
 
-        with Session() as session:
-            oldest_timestamp = session.execute(
-                select(RawData.timestamp).order_by(RawData.timestamp.asc()).limit(1)
-            ).scalar_one()
-            assert oldest_timestamp == 1686495605
+        oldest_timestamp = session.execute(
+            select(RawData.timestamp).order_by(RawData.timestamp.asc()).limit(1)
+        ).scalar_one()
+        assert oldest_timestamp == 1686495605
 
     # average_raw_data_loop
     # patch start_time & oldest query.
