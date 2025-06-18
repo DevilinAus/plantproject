@@ -15,7 +15,7 @@ def describe_average_raw_data():
     def test_start_time():
         pass
 
-    def test_oldest_query():
+    def test_oldest_query(seed_database, setup_test_db):
         session = SessionLocal()
 
         oldest_timestamp = session.execute(
