@@ -1,5 +1,6 @@
 from unittest.mock import Mock, ANY
 from app.db.flask_db import db
+from models.models import RawData
 from scripts.db.vanilla_db import SessionLocal
 
 
@@ -10,8 +11,6 @@ from database_average_data import (
     round_down_to_hour,
     Session,
     create_engine,
-    AvgData,
-    RawData,
 )
 
 
