@@ -23,7 +23,6 @@ def describe_average_raw_data():
         pass
 
     def test_oldest_query(seed_database):
-        engine, Session = seed_database
         session = SessionLocal()
 
         oldest_timestamp = session.execute(
