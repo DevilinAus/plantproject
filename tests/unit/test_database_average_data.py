@@ -1,17 +1,10 @@
 from unittest.mock import Mock, ANY
-from app.db.flask_db import db
 from models.models import RawData
 from scripts.db.vanilla_db import SessionLocal
 
-
-from app import create_app
 from sqlalchemy import select
 
-from database_average_data import (
-    round_down_to_hour,
-    Session,
-    create_engine,
-)
+from database_average_data import round_down_to_hour
 
 
 def describe_average_raw_data():
