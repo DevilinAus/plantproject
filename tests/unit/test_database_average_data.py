@@ -12,13 +12,8 @@ def describe_average_raw_data():
         returned_ts = round_down_to_hour(1754913805)
         assert returned_ts == 1754913600
 
-    def test_start_time():
-        pass
-
     def test_average_multiple_values(raw_session):
         timestamp_to_process = 1686495605 + 3600
-
-        # populate the raw data table
 
         seed_data = [
             RawData(timestamp=1686495605, value=90),
@@ -31,7 +26,6 @@ def describe_average_raw_data():
 
         average_raw_data(timestamp_to_process, raw_session.get_bind())
 
-        # read from db
         query = select(AvgData)
 
         average = raw_session.scalars(query).one()
@@ -49,7 +43,6 @@ def describe_average_raw_data():
 
         average_raw_data(timestamp_to_process, raw_session.get_bind())
 
-        # read from db
         query = select(AvgData)
 
         average = raw_session.scalars(query).one()
