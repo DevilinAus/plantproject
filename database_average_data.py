@@ -1,11 +1,9 @@
 import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import declarative_base, Session
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from models.models import RawData, AvgData
 from scripts.db.vanilla_db import get_engine_and_session
-
-Base = declarative_base()
 
 ONE_HOUR = 3600
 
@@ -16,12 +14,12 @@ def round_down_to_hour(timestamp):
 
 def average_raw_data_loop():
     # Create standalone version of the engine, so it's not reliant on Flask running.
-    engine = get_engine_and_session()
+    engine, SessionLocal = get_engine_and_session()
 
     start_time = datetime.datetime.now().timestamp()
     oldest_query = select(RawData.timestamp).order_by(RawData.timestamp.asc()).limit(1)
 
-    with Session(engine) as session:
+    with SessionLocal() as session:
         oldest_timestamp = session.execute(oldest_query).scalar_one_or_none()
 
     if oldest_timestamp:

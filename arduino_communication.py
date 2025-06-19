@@ -2,19 +2,13 @@ import datetime
 import requests
 import json
 from apscheduler.schedulers.blocking import BlockingScheduler
-from app.db.models import RawData
+from scripts.db.vanilla_db import get_engine_and_session
+from models.models import RawData
 from config import ARDUINO_IP
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 
-# Create standalone version of the engine, so it's not reliant on Flask running.
-engine = create_engine("sqlite:///instance/plant_info.db", future=True)
-
-
-# Copy of the storing function, again so not reliant on the Flask app.
-def store_data_arduino(model_class, timestamp: int, value: int):
-    with Session(engine) as session:
+def store_data_arduino(model_class, timestamp: int, value: int, SessionLocal):
+    with SessionLocal() as session:
         new_entry = model_class(timestamp=timestamp, value=value)
 
         session.add(new_entry)
@@ -43,10 +37,11 @@ def get_sensor_data():
 
 
 def main():
+    _, SessionLocal = get_engine_and_session()
     time_collected = int(datetime.datetime.now().timestamp())
     last_generated = int(get_sensor_data())
 
-    store_data_arduino(RawData, time_collected, last_generated)
+    store_data_arduino(RawData, time_collected, last_generated, SessionLocal)
 
 
 scheduler = BlockingScheduler()
