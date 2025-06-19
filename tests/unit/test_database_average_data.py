@@ -1,36 +1,51 @@
-from unittest.mock import Mock, ANY
+from models.models import AvgData, RawData
+from database_average_data import average_raw_data
 
-from database_average_data import write_to_db
+
+from sqlalchemy import select
+
+from database_average_data import round_down_to_hour
 
 
 def describe_average_raw_data():
-    def test_simple_mock(mocker):
-        func = Mock()
+    def test_round_down_to_hour():
+        returned_ts = round_down_to_hour(1754913805)
+        assert returned_ts == 1754913600
 
-        func(4, 4)
-        func(4, 10)
+    def test_average_multiple_values(raw_session):
+        timestamp_to_process = 1686495605 + 3600
 
-        func.assert_called()
-        func.assert_any_call(4, 10)
-        func.assert_any_call(4, 4)
-        # func.assert_not_called()
+        seed_data = [
+            RawData(timestamp=1686495605, value=90),
+            RawData(timestamp=1686495623, value=100),
+            RawData(timestamp=1686495734, value=110),
+        ]
 
+        raw_session.add_all(seed_data)
+        raw_session.commit()
 
-def disabled_test_2():
-    # TODO Needs to be rewritten to work with new ORM.
-    mock_cursor = Mock()
+        average_raw_data(timestamp_to_process, raw_session.get_bind())
 
-    def get_mock_cursor():
-        return mock_cursor
+        query = select(AvgData)
 
-    connection = Mock()
-    connection.cursor = get_mock_cursor
+        average = raw_session.scalars(query).one()
 
-    # connection.close()
+        assert average.timestamp == 1686495605
+        assert average.value == 100
 
-    # Do some stuff with connection
-    write_to_db(1, 2, connection)
+    def test_averages_single_value(raw_session):
+        timestamp_to_process = 1686495605 + 3600
 
-    connection.close.assert_called()
-    connection.commit.assert_called()
-    mock_cursor.execute.assert_any_call(ANY, (1, 2))
+        seed_data = [RawData(timestamp=1686495605, value=90)]
+
+        raw_session.bulk_save_objects(seed_data)
+        raw_session.commit()
+
+        average_raw_data(timestamp_to_process, raw_session.get_bind())
+
+        query = select(AvgData)
+
+        average = raw_session.scalars(query).one()
+
+        assert average.timestamp == 1686495605
+        assert average.value == 90

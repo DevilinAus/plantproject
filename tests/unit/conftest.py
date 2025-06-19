@@ -1,6 +1,7 @@
 import pytest
 from app import create_app
-from app.db.database import db
+from app.db.flask_db import db
+from scripts.db.vanilla_db import get_engine_and_session
 
 
 @pytest.fixture()
@@ -42,3 +43,19 @@ def db_session():
 
     db.session.rollback()  # Rollback to savepoint
     db.session.close()
+
+
+DATABASE_URI = "sqlite:///:memory:"
+
+
+@pytest.fixture
+def raw_session():
+    engine, SessionLocal = get_engine_and_session(DATABASE_URI)
+    session = SessionLocal()
+
+    session.begin_nested()
+
+    yield session
+
+    session.rollback()
+    session.close()

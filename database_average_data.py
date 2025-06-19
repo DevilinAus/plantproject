@@ -1,9 +1,11 @@
 import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
-from app.db.models import AvgData, RawData
-
 from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import declarative_base, Session
+from models.models import RawData, AvgData
+from scripts.db.vanilla_db import get_engine_and_session
+
+Base = declarative_base()
 
 ONE_HOUR = 3600
 
@@ -12,11 +14,10 @@ def round_down_to_hour(timestamp):
     return timestamp - (timestamp % ONE_HOUR)
 
 
-# Create standalone version of the engine, so it's not reliant on Flask running.
-engine = create_engine("sqlite:///instance/plant_info.db", future=True)
-
-
 def average_raw_data_loop():
+    # Create standalone version of the engine, so it's not reliant on Flask running.
+    engine = get_engine_and_session()
+
     start_time = datetime.datetime.now().timestamp()
     oldest_query = select(RawData.timestamp).order_by(RawData.timestamp.asc()).limit(1)
 
@@ -31,11 +32,11 @@ def average_raw_data_loop():
 
     if oldest_hour_floor:
         while oldest_hour_floor < start_time:
-            average_raw_data(oldest_hour_floor)
+            average_raw_data(oldest_hour_floor, engine)
             oldest_hour_floor += ONE_HOUR
 
 
-def average_raw_data(timestamp_to_process):
+def average_raw_data(timestamp_to_process, engine):
     one_hour_ago = timestamp_to_process - ONE_HOUR
 
     print(f"Timestamp to process is: {timestamp_to_process}")
@@ -61,10 +62,10 @@ def average_raw_data(timestamp_to_process):
     else:
         average_reading = None
 
-    write_to_db(one_hour_ago, average_reading)
+    write_to_db(one_hour_ago, average_reading, engine)
 
 
-def write_to_db(one_hour_ago, average_reading):
+def write_to_db(one_hour_ago, average_reading, engine):
     with Session(engine) as session:
         # Check if one hour ago already exists.
         existing_record = (

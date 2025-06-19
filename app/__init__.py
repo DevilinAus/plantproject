@@ -1,8 +1,8 @@
 from flask import Flask
-from app.db.database import db
 from flask_login import LoginManager
 import secrets
 from app.user import User, users
+from app.db.flask_db import db
 
 login_manager = LoginManager()
 
@@ -45,8 +45,10 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
-    # Import blueprints here AFTER app is created
+    with app.app_context():
+        db.create_all()
 
+    # Register Blueprints
     from app.index import index_bp
     from app.charts import charts_bp
     from app.auth import auth_bp
@@ -64,8 +66,5 @@ def create_app(test_config=None):
     app.register_blueprint(stats_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(weather_api_bp)
-
-    with app.app_context():
-        db.create_all()
 
     return app
