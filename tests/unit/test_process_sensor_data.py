@@ -1,10 +1,10 @@
 from models.models import AvgData, RawData
-from database_average_data import average_raw_data
+from scripts.process_sensor_data import average_raw_data
 
 
 from sqlalchemy import select
 
-from database_average_data import round_down_to_hour
+from scripts.process_sensor_data import round_down_to_hour
 
 
 def describe_average_raw_data():
