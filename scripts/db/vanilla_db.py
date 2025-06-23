@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base
+from models.models import Base
 
 DATABASE_URI = "sqlite:///instance/plant_info.db"
 
