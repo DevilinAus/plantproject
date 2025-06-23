@@ -6,32 +6,32 @@ def describe_translate_moisture():
     def test_translate_moisture_25():
         returned_result = translate_moisture(25, 200)
         assert "Moisture levels critical." in returned_result
-        assert "88%" in returned_result
+        assert "12%" in returned_result
 
     def test_translate_moisture_75():
         returned_result = translate_moisture(75, 213)
         assert "Moisture levels balanced." in returned_result
-        assert "65%" in returned_result
+        assert "35%" in returned_result
 
     def test_translate_moisture_125():
         returned_result = translate_moisture(125, 226)
         assert "Moisture within acceptable parameters." in returned_result
-        assert "45%" in returned_result
+        assert "55%" in returned_result
 
     def test_translate_moisture_175():
         returned_result = translate_moisture(175, 378)
         assert "Moisture decreasing." in returned_result
-        assert "54%" in returned_result
+        assert "46%" in returned_result
 
     def test_translate_moisture_225():
         returned_result = translate_moisture(225, 9999)
         assert "Warning: Dry conditions detected." in returned_result
-        assert "98%" in returned_result
+        assert "2%" in returned_result
 
     def test_translate_moisture_275():
         returned_result = translate_moisture(275, 13)
         assert "Alert: Severe dehydration likely." in returned_result
-        assert "-2015%" in returned_result
+        assert "2115%" in returned_result
 
     def test_translate_moisture_325():
         returned_result = translate_moisture(325, 325)
@@ -49,8 +49,7 @@ def describe_translate_moisture():
         assert "%" not in returned_result
 
 
-def disabled_test_show_homepage(client, db_session):
-    # Needs rewriting to ORM standard
+def test_show_homepage(client, db_session):
     row = RawData(timestamp=5000, value=66)
     db_session.add(row)
 
