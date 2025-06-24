@@ -33,14 +33,7 @@ def get_chart_data(timeframe):
 
     rows = db.session.execute(query).scalars().all()
 
-    response_data = []
-
-    for row in rows:
-        label = row.timestamp
-        value = row.value
-
-        current_datapoint = construct_datapoint(label, value)
-        response_data.append(current_datapoint)
+    response_data = [construct_datapoint(row.timestamp, row.value) for row in rows]
 
     return response_data
 
