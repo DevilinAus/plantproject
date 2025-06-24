@@ -49,3 +49,25 @@ def describe_average_raw_data():
 
         assert average.timestamp == 1686495605
         assert average.value == 90
+
+    def test_average_multiple_values_with_none(raw_session):
+        timestamp_to_process = 1686495605 + 3600
+
+        seed_data = [
+            RawData(timestamp=1686495605, value=90),
+            RawData(timestamp=1686495623, value=100),
+            RawData(timestamp=1686495734, value=110),
+            RawData(timestamp=1686495774, value=None),
+        ]
+
+        raw_session.add_all(seed_data)
+        raw_session.commit()
+
+        average_raw_data(timestamp_to_process, raw_session.get_bind())
+
+        query = select(AvgData)
+
+        average = raw_session.scalars(query).one()
+
+        assert average.timestamp == 1686495605
+        assert average.value == 100

@@ -4,12 +4,23 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models.models import RawData, AvgData
 from scripts.db.vanilla_db import get_engine_and_session
+from functools import reduce
 
 ONE_HOUR = 3600
 
 
 def round_down_to_hour(timestamp):
     return timestamp - (timestamp % ONE_HOUR)
+
+
+def not_none(row):
+    return row.value is not None
+
+
+def add_totals(running_total, row):
+    addition = row.value
+
+    return running_total + addition
 
 
 def average_raw_data_loop():
@@ -48,12 +59,11 @@ def average_raw_data(timestamp_to_process, engine):
     with Session(engine) as session:
         rows = session.execute(query).scalars().all()
 
-    reading_count = 0
-    total_reading_value = 0
+    pruned_avg_data = list(filter(not_none, rows))
 
-    for row in rows:
-        reading_count += 1
-        total_reading_value += row.value
+    reading_count = len(pruned_avg_data)
+
+    total_reading_value = reduce(add_totals, pruned_avg_data, 0)
 
     if reading_count > 0:
         average_reading = round(total_reading_value / reading_count)

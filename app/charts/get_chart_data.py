@@ -15,9 +15,9 @@ def round_down_to_hour(timestamp):
     return timestamp - (timestamp % 3600)
 
 
-def construct_datapoint(label, value):
-    label = label * 1000
-    return {"x": label, "y": value}
+def construct_datapoint(row):
+    label = row.timestamp * 1000
+    return {"x": label, "y": row.value}
 
 
 def get_chart_data(timeframe):
@@ -33,14 +33,7 @@ def get_chart_data(timeframe):
 
     rows = db.session.execute(query).scalars().all()
 
-    response_data = []
-
-    for row in rows:
-        label = row.timestamp
-        value = row.value
-
-        current_datapoint = construct_datapoint(label, value)
-        response_data.append(current_datapoint)
+    response_data = list(map(construct_datapoint, rows))
 
     return response_data
 
