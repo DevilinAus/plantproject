@@ -19,7 +19,7 @@ class RawData(Base):
     __tablename__ = "raw_data"
     id: Mapped[int] = mapped_column(primary_key=True)
     timestamp: Mapped[int] = mapped_column(unique=True)
-    value: Mapped[int]
+    value: Mapped[Optional[int]] = mapped_column()
 
 
 @dataclass
