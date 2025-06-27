@@ -36,3 +36,11 @@ class MoistureReading(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     timestamp: Mapped[int] = mapped_column(unique=True)
     value: Mapped[int]
+
+
+@dataclass
+class Weather(Base):
+    __tablename__ = "weather_current"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    key: Mapped[str] = mapped_column(unique=True)
+    value: Mapped[Optional[str]] = mapped_column()
