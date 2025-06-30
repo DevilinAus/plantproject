@@ -1,9 +1,15 @@
-from dotenv import load_dotenv
-import requests
 import os
-import db
-from flask import Blueprint
 import time
+import requests
+
+from dotenv import load_dotenv
+from flask import Blueprint, jsonify
+from sqlalchemy import select
+from sqlalchemy.dialects.sqlite import insert
+
+from app.db.flask_db import db
+from models.models import Weather
+
 
 weather_api_bp = Blueprint(
     "weather_api", __name__, url_prefix="/integrations", template_folder="templates"
@@ -12,44 +18,52 @@ weather_api_bp = Blueprint(
 load_dotenv()
 API_KEY = os.getenv("WEATHER_API_KEY")
 CITY = "Brisbane"
+FIFTEEN_MINS = 900
 
-# Current weather.
-current_query = (
-    f"https://api.weatherapi.com/v1/current.json?key={API_KEY}&q={CITY}&aqi=no"
-)
-
-forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={CITY}&days=3&aqi=no&alerts=no"
+# Copy paste these into functions as you need them. Can delete once they've been used.
+# current_query = (
+#     f"https://api.weatherapi.com/v1/current.json?key={API_KEY}&q={CITY}&aqi=no"
+# )
+# forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={CITY}&days=3&aqi=no&alerts=no"
 
 
 @weather_api_bp.route("/get_weather", methods=["GET"])
 def get_weather():
     now = int(time.time())
-    collected_at = db.fetch_collected_at()
 
-    if (now - int(collected_at)) > 300:
-        fetch_external_data(now)
+    last_updated_stmt = select(Weather.id).where(Weather.key == "last_updated_epoch")
+    last_updated = db.session.execute(last_updated_stmt).scalar_one_or_none()
 
-    db_data = db.fetch_all("current_weather")
+    if (last_updated is None) or (now > last_updated + FIFTEEN_MINS):
+        fetch_external_data()
 
-    print(db_data)
+    fetch_all_query = select(Weather)
+    db_data = db.session.execute(fetch_all_query).scalars().all()
 
-    return db_data
+    return jsonify({row.key: row.value for row in db_data})
 
 
-def fetch_external_data(now):
-    response = requests.get(current_query)
-    current_weather = response.json()
+def fetch_external_data():
+    forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={CITY}&days=3&aqi=no&alerts=no"
 
-    if response.status_code == 200:
-        pass
-    else:
-        print(f"Failed to fetch data: {current_weather.status_code}")
+    response = requests.get(forecast_query)
+    forecast_weather = response.json()
 
-    for key, value in current_weather["current"].items():
+    if response.status_code != 200:
+        print(f"Failed to fetch data: {forecast_weather.status_code}")
+
+    # Two loops, there's a nested dict in the external return, unique keys, so this flattens the return.
+    for key, value in forecast_weather["current"].items():
         if key != "condition":
-            db.store_weather(key, value)
+            stmt = insert(Weather).values(key=key, value=value)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=["key"], set_={"value": value}
+            )
+            db.session.execute(stmt)
 
-    for key, value in current_weather["current"]["condition"].items():
-        db.store_weather(key, value)
+    for key, value in forecast_weather["current"]["condition"].items():
+        stmt = insert(Weather).values(key=key, value=value)
+        stmt = stmt.on_conflict_do_update(index_elements=["key"], set_={"value": value})
+        db.session.execute(stmt)
 
-    db.store_weather("fetched_at", now)
+    db.session.commit()
