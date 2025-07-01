@@ -1,5 +1,4 @@
 import os
-
 import tensorflow as tf
 from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Input
 from keras.models import Sequential
@@ -135,6 +134,5 @@ def main():
     )
 
     model.summary()
-
 
 main()
