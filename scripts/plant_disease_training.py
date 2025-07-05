@@ -78,6 +78,9 @@ def main():
 
     train_ds, val_ds = data_preprocess(training_directory)
 
+    class_name = val_ds.class_names
+    print(class_name)
+
     # Enable prefetching, this allows CPU to prep the next dataset whilst the GPU is working. Zoomies!
     # Speed increase from this is most noticable between each run, there's no longer delay.
     AUTOTUNE = tf.data.AUTOTUNE
@@ -194,10 +197,36 @@ def main():
     model.summary()
 
     # Model Training
-
     training_history = model.fit(
         x=train_ds, validation_data=val_ds, epochs=50, callbacks=[early_stop]
     )
+
+    # Model Evaluation on Training Set
+    train_loss, train_acc = model.evaluate(train_ds)
+
+    print(f"Train Loss: {train_loss}")
+    print(f"Train Accuracy: {train_acc}")
+
+    # Model Evaluation on Validation Set
+    train_loss, train_acc = model.evaluate(val_ds)
+
+    print(f"Train Loss: {train_loss}")
+    print(f"Train Accuracy: {train_acc}")
+
+    model.save("trained_model.h5")
+    model.save("trained_model.keras")
+
+    # can output this as JSON if I need it later (don't think I do right now)
+    print(training_history.history)
+
+    epochs = [i for i in range(0, 50)]
+    plt.plot(
+        epochs,
+        training_history.history["accuracy"],
+        color="red",
+        label="Training Accuray",
+    )
+    plt.show()
 
 
 main()
