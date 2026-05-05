@@ -9,14 +9,23 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+
+
+print(tf.__version__)
+print(tf.config.list_physical_devices('GPU'))
+
+
+print(f" Metal Device?:{tf.config.list_logical_devices()}")  # should show a Metal device
+
+
 # Enable float16 mixed precision for Tensor Core acceleration.
 # This speeds up training significantly on NVIDIA GPUs with Tensor Cores,
 # including RTX 20xx, 30xx, and 40xx series (Turing, Ampere, Ada Lovelace architectures).
 # On CPUs or older GPUs, this may have no benefit or cause instability.
-if tf.config.list_physical_devices("GPU"):
-    from keras.mixed_precision import set_global_policy
+# if tf.config.list_physical_devices("GPU"):
+#     from keras.mixed_precision import set_global_policy
 
-    set_global_policy("mixed_float16")
+    # set_global_policy("mixed_float16")
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
@@ -213,8 +222,8 @@ def main():
     print(f"Train Loss: {train_loss}")
     print(f"Train Accuracy: {train_acc}")
 
-    model.save("trained_model.h5")
-    model.save("trained_model.keras")
+    # model.save("trained_model.h5")
+    # model.save("trained_model.keras")
 
     # can output this as JSON if I need it later (don't think I do right now)
     print(training_history.history)

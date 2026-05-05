@@ -1,29 +1,67 @@
 from flask import render_template
 from sqlalchemy import func, select
-from models.models import RawData
+from models.models import AvgData, RawData
 from . import index_bp
 from app.db.flask_db import db
 
 
 @index_bp.route("/")
 def show_homepage():
-    latest_query = select(RawData.value).order_by(RawData.id.desc()).limit(1)
-    maximum_query = select(func.max(RawData.value))
+    latest_raw_query = select(RawData.value).order_by(RawData.id.desc()).limit(1)
+    maximum_raw_query = select(func.max(RawData.value))
+    latest_avg_query = select(AvgData.value).order_by(AvgData.id.desc()).limit(1)
+    maximum_avg_query = select(func.max(AvgData.value))
 
-    latest_db_reading = db.session.execute(latest_query).scalar_one_or_none()
-    maximum_value = db.session.execute(maximum_query).scalar_one_or_none()
+    latest_raw_reading = db.session.execute(latest_raw_query).scalar_one_or_none()
+    maximum_raw_value = db.session.execute(maximum_raw_query).scalar_one_or_none()
+    latest_avg_reading = db.session.execute(latest_avg_query).scalar_one_or_none()
+    maximum_avg_value = db.session.execute(maximum_avg_query).scalar_one_or_none()
 
-    current_moisture = translate_moisture(latest_db_reading, maximum_value)
+    current_reading = first_numeric(latest_raw_reading, latest_avg_reading, 138)
+    max_value = first_numeric(maximum_raw_value, maximum_avg_value, 190)
+
+    current_moisture = translate_moisture(current_reading, max_value)
 
     return render_template("index.html", current_moisture=current_moisture)
 
 
-def translate_moisture(reading, max_wet):
-    if isinstance(reading, (int, float)) and isinstance(max_wet, (int, float)):
-        percent_value = int((reading / max_wet) * 100)
+def first_numeric(*values):
+    for value in values:
+        parsed_value = parse_numeric(value)
+        if parsed_value is not None:
+            return parsed_value
 
-    else:
-        return "Non numberic values provided. Consult administrator"
+    return None
+
+
+def parse_numeric(value):
+    if isinstance(value, bool):
+        return None
+
+    if isinstance(value, (int, float)):
+        return float(value)
+
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            return None
+
+    return None
+
+
+def translate_moisture(reading, max_wet):
+    reading = parse_numeric(reading)
+    max_wet = parse_numeric(max_wet)
+
+
+    if reading is None or max_wet is None or max_wet <= 0:
+        return (
+            "Non numberic values provided. Consult administrator"
+        )
+
+    percent_value = int((reading / max_wet) * 100)
+    reading = int(round(reading))
 
     # Added subnautica themed warnings, I might want to update these to be an option when app is more complete.
     # Maybe a few different "themes" for the warnings, that could tie in with the tailwind theme"
