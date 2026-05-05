@@ -51,9 +51,13 @@ def parse_numeric(value):
 
 
 def translate_moisture(reading, max_wet):
-    if reading is None or max_wet is None or int(max_wet) <= 0:
+    reading = parse_numeric(reading)
+    max_wet = parse_numeric(max_wet)
+
+
+    if reading is None or max_wet is None or max_wet <= 0:
         return (
-            "Moisture data syncing. <br/> Demo values are loading for the dashboard."
+            "Non numberic values provided. Consult administrator"
         )
 
     percent_value = int((reading / max_wet) * 100)
