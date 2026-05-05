@@ -51,7 +51,7 @@ def parse_numeric(value):
 
 
 def translate_moisture(reading, max_wet):
-    if reading is None or max_wet is None or max_wet <= 0:
+    if reading is None or max_wet is None or int(max_wet) <= 0:
         return (
             "Moisture data syncing. <br/> Demo values are loading for the dashboard."
         )
