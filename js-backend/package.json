@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "[![Build status](https://github.com/DevilinAus/plantproject/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/DevilinAus/plantproject/actions/workflows/test.yml)",
-  "main": "server.js",
+  "main": "weather-server.js",
   "directories": {
     "test": "tests"
   },
