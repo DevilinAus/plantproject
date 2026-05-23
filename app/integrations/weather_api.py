@@ -18,7 +18,7 @@ weather_api_bp = Blueprint(
 load_dotenv()
 API_KEY = os.getenv("WEATHER_API_KEY")
 CITY = "Brisbane"
-FIFTEEN_MINS = 900
+CACHE_DURATION_SECS = 900
 
 # Copy paste these into functions as you need them. Can delete once they've been used.
 # current_query = (
@@ -34,7 +34,7 @@ def get_weather():
     last_updated_stmt = select(Weather.id).where(Weather.key == "last_updated_epoch")
     last_updated = db.session.execute(last_updated_stmt).scalar_one_or_none()
 
-    if (last_updated is None) or (now > last_updated + FIFTEEN_MINS):
+    if (last_updated is None) or (now > last_updated + CACHE_DURATION_SECS):
         fetch_external_data()
 
     fetch_all_query = select(Weather)
@@ -46,11 +46,11 @@ def get_weather():
 def fetch_external_data():
     forecast_query = f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={CITY}&days=3&aqi=no&alerts=no"
 
-    response = requests.get(forecast_query)
+    response = requests.get(forecast_query, timeout=30)
     forecast_weather = response.json()
 
     if response.status_code != 200:
-        print(f"Failed to fetch data: {forecast_weather.status_code}")
+        print(f"Failed to fetch data: {response.status_code}")
 
     # Two loops, there's a nested dict in the external return, unique keys, so this flattens the return.
     for key, value in forecast_weather["current"].items():
