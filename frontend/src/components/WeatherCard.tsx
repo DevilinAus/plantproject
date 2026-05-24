@@ -1,4 +1,6 @@
-function WeatherCard({ temp, humidity, condition }) {
+type WeatherCardProps = { temp: number; humidity: number; condition: string };
+
+function WeatherCard({ temp, humidity, condition }: WeatherCardProps) {
   return (
     <section>
       <h2>Current Weather</h2>
